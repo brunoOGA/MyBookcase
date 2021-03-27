@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Image, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, StatusBar } from 'react-native';
+import { View, Image, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, StatusBar, TouchableWithoutFeedback } from 'react-native';
 import ButtonText from '../../components/buttonText';
 import InputIcon from '../../components/inputIcon';
-
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
-// import firebase from 'firebase';
+import firebase from 'firebase';
 
 Icon.loadFont();
 
@@ -19,101 +19,47 @@ export default class LoginScreen extends React.Component {
             email: "",
             password: "",
             isLoading: false,
-            message: ""
+            message: "",
+            secureText: true,
         }
     }
-    /*
-        componentDidMount() {
-            var firebaseConfig = {
-                apiKey: "AIzaSyDbw2xXqgWbLt_IhvsFVbStUizDXygKqkM",
-                authDomain: "minhasseries-de2e6.firebaseapp.com",
-                projectId: "minhasseries-de2e6",
-                storageBucket: "minhasseries-de2e6.appspot.com",
-                messagingSenderId: "539316043739",
-                appId: "1:539316043739:web:dfdd111ea84d2a460271fe",
-                measurementId: "G-6P3JTF4TNB"
-            };
-            // Initialize Firebase
-            firebase.initializeApp(firebaseConfig);
-    
-        }
-    */
+
+
+
     onChangeHandler(field, value) {
         this.setState({
             [field]: value
         })
     }
 
-    processLogin(props) {
-        /*
-                this.setState({
-                    isLoading: true,
-                })
-                const { email, password } = this.state;
-        
-                const loginUserSucess = user => {
-                   
-                }
-        
-                const loginUserFailed = error => {
-                    this.setState({
-                        message: this.getMessageByError(error.code)
-                    });
-                }
-        */
-        props.navigation.navigate('Menu')
-        /* 
-               firebase.auth()
-                    .signInWithEmailAndPassword(email, password)
-                    .then( props.navigation.navigate('Menu'))
-                    .catch(error => {
-                        if (error.code == "auth/user-not-found") {
-                            Alert.alert(
-                                "Usuário não encontrado",
-                                "Deseja criar um novo usuário?",
-                                [{
-                                    text: "Não",
-                                    onPress: () => {
-                                        console.log('Usuário não quis criar nova conta.')
-                                    }
-                                }, {
-                                    text: "Sim",
-                                    onPress: () => {
-                                        firebase
-                                            .auth()
-                                            .createUserWithEmailAndPassword(email, password)
-                                            .then(loginUserSucess)
-                                            .catch(loginUserFailed)
-                                    }
-                                }],
-                                { cancelable: false }
-                            );
-                        }
-                        loginUserFailed(error)
-                    })
-                    .then(() => {
-                        this.setState({ isLoading: false })
-                    })
-        */
+    processLogin() {
+        this.setState({ isLoading: true, message: '' })
+
+        const { email, password } = this.state;
+
+        firebase
+            .auth()
+            .signInWithEmailAndPassword(email, password)
+            .then(user => {
+                this.props.navigation.navigate("Menu");
+            })
+            .catch(error => {
+                this.setState({ message: 'Suas credenciais de login não coincidem com uma conta em nosso sistema.', password: '' })
+            })
+            .finally(() => {
+                this.setState({ isLoading: false })
+            })
+
+
     }
 
-    getMessageByError(code) {
-        switch (code) {
-            case "auth/user-not-found":
-                return "Email inexistente."
-            case "auth/wrong-password":
-                return "Senha incorreta"
-            default:
-                return "Erro desconhecido"
-        }
-    }
+    renderButton() {
 
-    renderButton(props) {
         if (this.state.isLoading)
-            return <ActivityIndicator />
+            return <ActivityIndicator size='large' color="#00BA88" style={{ height: 56 }} />
 
         return (
-            <ButtonText label="Entrar" onPress={() => this.processLogin(props)} />
+            <ButtonText label="Entrar" onPress={() => this.processLogin()} />
         )
 
     }
@@ -126,70 +72,114 @@ export default class LoginScreen extends React.Component {
 
         return (
             <View>
-                <Text>{message}</Text>
+                <Text style={{ color: '#ED2E7E' }}>{message}</Text>
             </View>
         )
     }
 
     render() {
+        let emailRef, passwordRef;
+
         return (
             <>
-                <StatusBar backgroundColor='#FCFCFC' barStyle="dark-content" />
+                <KeyboardAwareScrollView>
+                    <StatusBar backgroundColor='#FCFCFC' barStyle="dark-content" />
 
-                <View style={styles.container}>
-                    <TouchableOpacity style={styles.btnBack} onPress={() => { this.props.navigation.pop() }}>
-                        <Icon name='chevron-left' size={22} color='#2A00A2' />
-                    </TouchableOpacity>
-                    <View style={{ alignItems: 'center', marginHorizontal: 30 }}>
-                        <Image source={logo} style={styles.image} />
-                        <View style={styles.containerTexts}>
-                            <Text style={styles.textTitle}>Login</Text>
-                        </View>
-                    </View>
+                    <View style={styles.container}>
 
-                    <View style={styles.form}>
-                        <Text style={styles.text}>Faça seu login para</Text>
-                        <Text style={styles.text}>começar a gerenciar sua leitura.</Text>
-                        <View >
-                            <InputIcon
-                                label='E-mail'
-                                icon="envelope"
-                                value={this.state.email}
-                                onChangeText={value => { this.onChangeHandler('email', value) }}
-                            />
-                            <InputIcon
-                                label='Senha'
-                                icon="lock"
-                                value={this.state.password}
-                                onChangeText={value => { this.onChangeHandler('password', value) }}
-                            />
+                        <TouchableOpacity style={styles.btnBack} onPress={() => { this.props.navigation.pop() }}>
+                            <Icon name='chevron-left' size={22} color='#2A00A2' />
+                        </TouchableOpacity>
+                        <View style={{ alignItems: 'center', marginHorizontal: 30 }}>
+                            <Image source={logo} style={styles.image} />
+                            <View style={styles.containerTexts}>
+                                <Text style={styles.textTitle}>Login</Text>
+                            </View>
                         </View>
 
-                        <View style={{
-                            width: '100%', 
-                            flexDirection: 'row', 
-                            justifyContent: 'center', 
-                            alignItems: 'center',
-                            height: 40,
-                            marginBottom: 8
-                        }}>
-                            <Text style={{
-                                fontSize: 16,
-                                color: '#06070D'
-                            }}>Não possui conta? </Text>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>
+
+                        <View style={styles.form}>
+                            <Text style={styles.text}>Faça seu login para</Text>
+                            <Text style={styles.text}>começar a gerenciar sua leitura.</Text>
+                            <View >
+                                <InputIcon
+                                    autoCorrect={false}
+                                    autoCapitalize="none"
+                                    keyboardType="email-address"
+                                    label='E-mail'
+                                    icon="envelope"
+                                    value={this.state.email}
+                                    onChangeText={value => { this.onChangeHandler('email', value) }}
+                                    returnKeyType="next"
+                                    inputRef={ref => emailRef = ref}
+                                    type={'email'}
+                                    onSubmitEditing={() => {
+                                        passwordRef.focus()
+                                    }}
+                                />
+
+                                <View style={{ position: 'relative' }}>
+                                    <InputIcon
+                                        label='Senha'
+                                        icon="lock"
+                                        value={this.state.password}
+                                        autoCorrect={false}
+                                        secureTextEntry={this.state.secureText}
+                                        onChangeText={value => { this.onChangeHandler('password', value) }}
+                                        inputRef={ref => passwordRef = ref}
+                                        returnKeyType="send"
+                                        onSubmitEditing={() => {
+                                            this.processLogin();
+                                        }}
+                                        marginRight={50}
+                                    />
+                                    <View style={{ position: 'absolute', top: 16, right: 16 }}>
+                                        <TouchableWithoutFeedback onPress={() => {
+                                            this.onChangeHandler('secureText', !this.state.secureText)
+                                        }} >
+                                            {this.state.secureText ?
+                                                <Icon name='eye' size={22} color='#2A00A2' />
+                                                :
+                                                <Icon name='eye-slash' size={22} color='#2A00A2' />
+                                            }
+                                        </TouchableWithoutFeedback>
+                                    </View>
+
+                                </View>
+                                {this.renderMessage()}
+                            </View>
+
+                            <View style={{
+                                width: '100%',
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                height: 40,
+                                marginBottom: 8
+                            }}>
                                 <Text style={{
-                                fontSize: 16,
-                                color: '#2A00A2'
-                            }}>Cadastra-se</Text>
-                            </TouchableOpacity>
+                                    fontSize: 16,
+                                    color: '#06070D'
+                                }}>Não possui conta? </Text>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>
+                                    <Text style={{
+                                        fontSize: 16,
+                                        color: '#2A00A2'
+                                    }}>Cadastra-se</Text>
+                                </TouchableOpacity>
+                            </View>
+
+
+
+                            {this.renderButton()}
+
+
                         </View>
 
-                        { this.renderButton(this.props)}
-                        {this.renderMessage()}
-                        
+
                     </View>
-                </View>
+                </KeyboardAwareScrollView>
+
             </>
         )
     }
@@ -199,7 +189,7 @@ export default class LoginScreen extends React.Component {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FCFCFC',
-        flex: 1,
+        flexGrow: 1,
         justifyContent: 'space-between',
     },
     image: {
@@ -217,7 +207,7 @@ const styles = StyleSheet.create({
     },
     form: {
         marginHorizontal: 30,
-        marginBottom: 100
+        marginBottom: 100,
     },
     text: {
         fontSize: 16,

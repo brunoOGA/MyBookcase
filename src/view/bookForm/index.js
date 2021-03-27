@@ -1,18 +1,11 @@
 import * as React from 'react';
-import { View, Text, Button, TouchableOpacity, StatusBar, Image } from 'react-native';
-import BookDetails from '../../components/bookDetails';
-import BookList from '../../components/bookList';
+import { View, Text, TouchableOpacity, StatusBar, Image, KeyboardAvoidingView } from 'react-native';
 import ButtonIcon from '../../components/buttonIcon';
 import ButtonText from '../../components/buttonText';
-import FloatingButton from '../../components/floatingButton';
-import HeaderDrawNav from '../../components/headerDrawNav';
-import InputIcon from '../../components/inputIcon';
-import InputLabel from '../../components/inputLabel'
-import BookListItem from '../../components/BookListItem';
-import Note from '../../components/note';
-import Notes from '../../components/notes';
+import InputLabel from '../../components/inputLabel';
 import Header from '../../components/header';
-import capa from '../../assets/livro.png';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 
 
 export default class BookForm extends React.Component {
@@ -51,88 +44,115 @@ export default class BookForm extends React.Component {
     }
 
     render() {
-
+        let titleRef, literaryGenreRef, authorRef, totalPagesRef, yearRef;
 
         return (
             <>
-                <StatusBar backgroundColor='#2A00A2' barStyle="light-content" />
-                {
-                    this.state.type == 'update' ?
-                        <Header title="Alterar Livro" onPressItem={() => {
-                            this.props.navigation.pop()
-                        }} />
-                        :
-                        <Header title="Novo Livro" onPressItem={() => {
-                            this.props.navigation.pop()
-                        }} />
-                }
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
-                {
-                    this.state.type == 'update' ?
-                    <TouchableOpacity onPress={() => { console.log("OLA") }}>
-                        <View style={{ position: 'relative', bottom: 12 }}>
-                            <Image source={{ uri: this.state.book.cover }} style={{ width: 121, height: 167, marginVertical: 6, marginLeft: 12, borderRadius: 4 }} />
-
-                            <View style={{ position: 'absolute', bottom: -8, right: -16 }}>
-                                <ButtonIcon type="camera" onPress={() => { console.log("OLA") }} />
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                    :
-                    <TouchableOpacity onPress={() => { console.log("OLA") }}>
-                        <View style={{ position: 'relative', bottom: 12 }}>
-                            <View style={{ width: 121, height: 167, marginVertical: 6, marginLeft: 12, borderRadius: 4, backgroundColor: '#EFF0F6', alignItems: 'center', justifyContent: 'center' }}>
-                                <Text style={{color: '#A0A3BD', fontSize: 16}}>Capa</Text>
-                            </View>
-
-                            <View style={{ position: 'absolute', bottom: -8, right: -16 }}>
-                                <ButtonIcon type="camera" onPress={() => { console.log("OLA") }} />
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                }
-                    <InputLabel label='Título'
-                        value={this.state.book.title}
-                        type="default"
-                        onChangeText={value => this.onChangeHandler('title', value)}
-                    />
-                    <InputLabel label='Gênero literário'
-                        value={this.state.book.literaryGenre}
-                        type="default"
-                        onChangeText={value => this.onChangeHandler('literaryGenre', value)}
-                    />
-                    <InputLabel label='Autor'
-                        value={this.state.book.author}
-                        type="default"
-                        onChangeText={value => this.onChangeHandler('author', value)}
-                    />
-                    <View style={{ width: 311 }}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-                            <InputLabel label='Nº de Páginas'
-                                value={this.state.book.totalPages}
-                                type="numeric"
-                                onChangeText={value => this.onChangeHandler('totalPages', value)}
-                            />
-                            <InputLabel label='Ano'
-                                value={this.state.book.year}
-                                type="numeric"
-                                onChangeText={value => this.onChangeHandler('year', value)}
-                            />
-                        </View>
-
-                        {this.state.type == 'update' ?
-                            <ButtonText label="Alterar" color="yellow" onPress={() => {
-                                console.log('teste')
-                            }} />
-                            :
-                            <ButtonText label="Adicionar" style={{ width: 311 }} onPress={() => {
-                                console.log('teste')
-                            }} />
+                <KeyboardAwareScrollView>
+                    <StatusBar backgroundColor='#2A00A2' barStyle="light-content" />
+                    <View style={{ zIndex: 10 }}>
+                        {
+                            this.state.type == 'update' ?
+                                <Header title="Alterar Livro" onPressItem={() => {
+                                    this.props.navigation.pop()
+                                }} />
+                                :
+                                <Header title="Novo Livro" onPressItem={() => {
+                                    this.props.navigation.pop()
+                                }} />
                         }
                     </View>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff', paddingVertical: 50 }}>
+                        {
+                            this.state.type == 'update' ?
+                                <TouchableOpacity onPress={() => { console.log("teste") }}>
+                                    <View style={{ position: 'relative', bottom: 12 }}>
+                                        <Image source={{ uri: this.state.book.cover }} style={{ width: 121, height: 167, marginVertical: 6, marginLeft: 12, borderRadius: 4 }} />
 
-                </View>
+                                        <View style={{ position: 'absolute', bottom: -8, right: -16 }}>
+                                            <ButtonIcon type="camera" onPress={() => { console.log("teste") }} />
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                                :
+                                <TouchableOpacity onPress={() => { console.log("teste") }}>
+                                    <View style={{ position: 'relative', bottom: 12 }}>
+                                        <View style={{ width: 121, height: 167, marginVertical: 6, marginLeft: 12, borderRadius: 4, backgroundColor: '#EFF0F6', alignItems: 'center', justifyContent: 'center' }}>
+                                            <Text style={{ color: '#A0A3BD', fontSize: 16 }}>Capa</Text>
+                                        </View>
 
+                                        <View style={{ position: 'absolute', bottom: -8, right: -16 }}>
+                                            <ButtonIcon type="camera" onPress={() => { console.log("teste") }} />
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                        }
+                        <InputLabel label='Título'
+                            value={this.state.book.title}
+                            type="default"
+                            onChangeText={value => this.onChangeHandler('title', value)}
+                            returnKeyType="next"
+                            inputRef={ref => titleRef = ref}
+                            onSubmitEditing={() => {
+                                literaryGenreRef.focus()
+                            }}
+                        />
+                        <InputLabel label='Gênero literário'
+                            value={this.state.book.literaryGenre}
+                            type="default"
+                            onChangeText={value => this.onChangeHandler('literaryGenre', value)}
+                            returnKeyType="next"
+                            inputRef={ref => literaryGenreRef = ref}
+                            onSubmitEditing={() => {
+                                authorRef.focus()
+                            }}
+                        />
+                        <InputLabel label='Autor'
+                            value={this.state.book.author}
+                            type="default"
+                            onChangeText={value => this.onChangeHandler('author', value)}
+                            returnKeyType="next"
+                            inputRef={ref => authorRef = ref}
+                            onSubmitEditing={() => {
+                                totalPagesRef.focus()
+                            }}
+                        />
+                        <View style={{ width: 311 }}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+                                <InputLabel label='Nº de Páginas'
+                                    value={this.state.book.totalPages}
+                                    type="numeric"
+                                    onChangeText={value => this.onChangeHandler('totalPages', value)}
+                                    returnKeyType="next"
+                                    inputRef={ref => totalPagesRef = ref}
+                                    onSubmitEditing={() => {
+                                        yearRef.focus()
+                                    }}
+                                />
+                                <InputLabel label='Ano'
+                                    value={this.state.book.year}
+                                    type="numeric"
+                                    onChangeText={value => this.onChangeHandler('year', value)}
+                                    returnKeyType="send"
+                                    inputRef={ref => yearRef = ref}
+                                    onSubmitEditing={() => {
+                                        console.log('teste')
+                                    }}
+                                />
+                            </View>
+
+                            {this.state.type == 'update' ?
+                                <ButtonText label="Alterar" color="yellow" onPress={() => {
+                                    console.log('teste')
+                                }} />
+                                :
+                                <ButtonText label="Adicionar" onPress={() => {
+                                    console.log('teste')
+                                }} />
+                            }
+                        </View>
+                    </View>
+                </KeyboardAwareScrollView>
             </>
         )
     }

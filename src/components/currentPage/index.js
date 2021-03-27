@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 Icon.loadFont();
 
-class CurrentPage extends React.Component {
+export default class CurrentPage extends React.Component {
 
     constructor(props) {
         super(props);
@@ -130,5 +130,3 @@ const styles = StyleSheet.create({
         paddingLeft: 12
       }
 })
-
-export default CurrentPage;

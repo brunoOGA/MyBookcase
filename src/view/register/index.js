@@ -1,8 +1,10 @@
 import * as React from 'react';
-import {View, Text, Image, StyleSheet, StatusBar, TouchableOpacity} from 'react-native';
+import { View, Text, Image, StyleSheet, StatusBar, TouchableOpacity, ActivityIndicator, TouchableWithoutFeedback } from 'react-native';
 import logo from '../../assets/logo2.png';
 import ButtonText from '../../components/buttonText';
 import InputIcon from '../../components/inputIcon';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import firebase from 'firebase';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -14,8 +16,12 @@ export default class Register extends React.Component {
         super(props);
 
         this.state = {
-            mail: "",
-            password: ""
+            email: "",
+            password: "",
+            confirmPassword: "",
+            message: "",
+            secureText: true,
+            secureConfirmText: true
         }
     }
 
@@ -25,49 +31,159 @@ export default class Register extends React.Component {
         })
     }
 
+    processRegister() {
+        this.setState({ isLoading: true, message: '' })
+
+        const { email, password, confirmPassword } = this.state;
+
+        if(password != confirmPassword) {
+            this.setState({  isLoading: false, message: 'Campo confirmar senha diferente do campo de senha.', confirmPassword: '' });
+        } else {
+            firebase
+                .auth()
+                .createUserWithEmailAndPassword(email, password)
+                .then(user => {
+                    this.props.navigation.navigate("Menu");
+                })
+                .catch(error => {
+                    this.setState({ message: 'Erro no cadastro.', email: '', password: '', confirmPassword: '' })
+                })
+                .finally(() => {
+                    this.setState({ isLoading: false })
+                })
+        }
+
+
+    }
+
+    renderButton() {
+
+        if (this.state.isLoading)
+            return <ActivityIndicator size='large' color="#00BA88" style={{ height: 56 }} />
+
+        return (
+            <ButtonText label="Cadastrar" onPress={() => this.processRegister()} />
+        )
+
+    }
+
+    renderMessage() {
+        const { message } = this.state;
+
+        if (!message)
+            return null;
+
+        return (
+            <View style={{marginBottom: 0}}>
+                <Text style={{ color: '#ED2E7E' }}>{message}</Text>
+            </View>
+        )
+    }
+
 
     render() {
+        let emailRef, passwordRef, confirmPasswordRef;
+
         return (
             <>
-            <StatusBar backgroundColor='#FCFCFC' barStyle="dark-content" />
-            
-            <View style={styles.container}>
-                <TouchableOpacity style={styles.btnBack} onPress={() => {this.props.navigation.pop()}}>
-                    <Icon  name='chevron-left' size={22} color='#2A00A2'/>
-                </TouchableOpacity>
-                <View style={{alignItems: 'center', marginHorizontal: 30}}>
-                    <Image source={logo} style={styles.image}/>
-                    <View style={styles.containerTexts}>
-                        <Text style={styles.textTitle}>Cadastro</Text>
-                    </View>
-                </View>
+                <KeyboardAwareScrollView>
+                    <StatusBar backgroundColor='#FCFCFC' barStyle="dark-content" />
 
-                <View  style={styles.form}>
-                    <Text style={styles.text}>Crie sua conta para </Text>
-                    <Text style={styles.text}>acessar o gerenciador de leitura</Text>
-                    <View style={{marginBottom: 40}}>
-                        <InputIcon 
-                            label='E-mail' 
-                            icon="envelope" 
-                            value={this.state.email}
-                            onChangeText={value => { this.onChangeHandler('email', value) }}
-                        />
-                        <InputIcon 
-                            label='Senha' 
-                            icon="lock" 
-                            value={this.state.password}
-                            onChangeText={value => { this.onChangeHandler('password', value) }}
-                        />
+                    <View style={styles.container}>
+                        <TouchableOpacity style={styles.btnBack} onPress={() => { this.props.navigation.pop() }}>
+                            <Icon name='chevron-left' size={22} color='#2A00A2' />
+                        </TouchableOpacity>
+                        <View style={{ alignItems: 'center', marginHorizontal: 30 }}>
+                            <Image source={logo} style={styles.image} />
+                            <View style={styles.containerTexts}>
+                                <Text style={styles.textTitle}>Cadastro</Text>
+                            </View>
+                        </View>
+
+                        <View style={styles.form}>
+                            <Text style={styles.text}>Crie sua conta para </Text>
+                            <Text style={styles.text}>acessar o gerenciador de leitura</Text>
+                            <View style={{ marginBottom: 40 }}>
+                                <InputIcon
+                                    label='E-mail'
+                                    icon="envelope"
+                                    value={this.state.email}
+                                    onChangeText={value => { this.onChangeHandler('email', value) }}
+                                    returnKeyType="next"
+                                    inputRef={ref => emailRef = ref}
+                                    type={'email'}
+                                    onSubmitEditing={() => {
+                                        passwordRef.focus()
+                                    }}
+                                />
+                                <View style={{position: 'relative'}}>
+                                    <InputIcon
+                                        label='Senha'
+                                        icon="lock"
+                                        value={this.state.password}
+                                        secureTextEntry={this.state.secureText}
+                                        onChangeText={value => { this.onChangeHandler('password', value) }}
+                                        inputRef={ref => passwordRef = ref}
+                                        returnKeyType="next"
+                                        autoCorrect={false}
+                                        onSubmitEditing={() => {
+                                            confirmPasswordRef.focus()
+                                        }}
+                                        marginRight={50}
+                                    />
+                                    <View style={{position: 'absolute', top: 16, right: 16}}>
+                                        <TouchableWithoutFeedback onPress={() => {
+                                            this.onChangeHandler('secureText', !this.state.secureText)
+                                        }} >
+                                            {this.state.secureText ?
+                                                <Icon name='eye' size={22} color='#2A00A2' />
+                                                :
+                                                <Icon name='eye-slash' size={22} color='#2A00A2' />
+                                            }
+                                        </TouchableWithoutFeedback>
+                                    </View>
+                                    
+                                </View>
+
+                                <View style={{position: 'relative'}}>
+                                    <InputIcon
+                                        label='Confirmar Senha'
+                                        icon="lock"
+                                        value={this.state.confirmPassword}
+                                        secureTextEntry={this.state.secureConfirmText}
+                                        onChangeText={value => { this.onChangeHandler('confirmPassword', value) }}
+                                        inputRef={ref => confirmPasswordRef = ref}
+                                        returnKeyType="send"
+                                        autoCorrect={false}
+                                        onSubmitEditing={() => {
+                                            this.processRegister();
+                                        }}
+                                        marginRight={50}
+                                    />
+                                    <View style={{position: 'absolute', top: 16, right: 16}}>
+                                        <TouchableWithoutFeedback onPress={() => {
+                                            this.onChangeHandler('secureConfirmText', !this.state.secureConfirmText)
+                                        }} >
+                                            {this.state.secureConfirmText ?
+                                                <Icon name='eye' size={22} color='#2A00A2' />
+                                                :
+                                                <Icon name='eye-slash' size={22} color='#2A00A2' />
+                                            }
+                                        </TouchableWithoutFeedback>
+                                    </View>
+                                    
+                                </View>
+                                {this.renderMessage()}
+                            </View>
+
+                            {this.renderButton()}
+                        </View>
                     </View>
-                    <ButtonText label="Cadastrar" onPress={() => {
-                        console.log('teste')
-                    }} />
-                </View>
-            </View>
+                </KeyboardAwareScrollView>
             </>
         )
     }
-    
+
 }
 
 const styles = StyleSheet.create({
@@ -91,7 +207,7 @@ const styles = StyleSheet.create({
     },
     form: {
         marginHorizontal: 30,
-        marginBottom: 100
+        paddingBottom: 50
     },
     text: {
         fontSize: 16,

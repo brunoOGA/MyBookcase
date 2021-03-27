@@ -1,12 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import livro from '../../assets/livro.png';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 Icon.loadFont();
 
-class BookListItem
-    extends Component {
+export default class BookListItem extends React.Component {
 
     render() {
         const { book, onPressItem, ...props } = this.props;
@@ -81,6 +79,4 @@ const styles = StyleSheet.create({
         fontSize: 18,
         marginBottom: 8
     }
-})
-
-export default BookListItem;
+});

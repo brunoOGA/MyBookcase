@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
+import {StyleSheet, View, Image} from 'react-native';
 import {createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem} from '@react-navigation/drawer';
 
 import Bookcase from '../../view/bookcase';
@@ -15,26 +15,28 @@ Icon.loadFont();
 
 const Drawer = createDrawerNavigator();
 
-export default function Menu() {
+export default class Menu extends React.Component{
 
-    return (
-        <Drawer.Navigator initialRouteName="Nome"
-            drawerStyle={styles.drawerStyle}
-            drawerContentOptions={{labelStyle: {"color": "#fff", fontSize: 22}}}
-            drawerContent={props => <CustomDrawerContent {...props} />} 
-        >
-            <Drawer.Screen 
-                name="Estante" 
-                component={Bookcase} 
-                options={{drawerIcon: config =>  <Image source={estante} style={styles.imageStyle} />}}
-            />
-            <Drawer.Screen 
-                name="Livro" 
-                component={BookFormDraw} 
-                options={ {drawerIcon: config => <Icon name="plus" size={30} color="#fff" />}}
-            />
-        </Drawer.Navigator>
-    )
+    render() {
+        return (
+            <Drawer.Navigator initialRouteName="Nome"
+                drawerStyle={styles.drawerStyle}
+                drawerContentOptions={{labelStyle: {"color": "#fff", fontSize: 22}}}
+                drawerContent={props => <CustomDrawerContent {...props} />} 
+            >
+                <Drawer.Screen 
+                    name="Estante" 
+                    component={Bookcase} 
+                    options={{drawerIcon: config =>  <Image source={estante} style={styles.imageStyle} />}}
+                />
+                <Drawer.Screen 
+                    name="Livro" 
+                    component={BookFormDraw} 
+                    options={ {drawerIcon: config => <Icon name="plus" size={30} color="#fff" />}}
+                />
+            </Drawer.Navigator>
+        )
+    }
 }
 
 function CustomDrawerContent(props) {

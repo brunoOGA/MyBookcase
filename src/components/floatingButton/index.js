@@ -6,7 +6,7 @@ import addNote from '../../assets/addNote.png';
 
 Icon.loadFont();
 
-class FloatingButton extends Component {
+export default class FloatingButton extends React.Component {
 
     render() {
         const { type, ...props } = this.props;
@@ -35,5 +35,3 @@ class FloatingButton extends Component {
         );
     }
 }
-
-export default FloatingButton;

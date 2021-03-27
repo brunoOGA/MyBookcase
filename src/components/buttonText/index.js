@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-class ButtonText extends Component {
+export default class ButtonText extends React.Component {
 
     render() {
         const { label, color, ...props } = this.props;
@@ -33,6 +33,4 @@ const styles = StyleSheet.create({
         color: '#FCFCFC',
         fontSize: 20
     }
-})
-
-export default ButtonText;
+});

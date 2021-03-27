@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Touchable, Button, TouchableWithoutFeedback } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableWithoutFeedback, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import ButtonIcon from '../buttonIcon';
 
 Icon.loadFont();
 
-class Note extends React.Component {
+export default class Note extends React.Component {
 
     constructor(props) {
         super(props);
@@ -39,7 +39,21 @@ class Note extends React.Component {
                                          navigation.navigate('NoteForm', {type: 'update', note, title})
                                     }} />
                                     <ButtonIcon type="delete" onPress={() => {
-                                        console.log('teste')
+                                        Alert.alert(
+                                            "Confirmação",
+                                            "Tem certeza que deseja excluir?",
+                                            [
+                                              {
+                                                text: "Não",
+                                                onPress: () => console.log('n'),
+                                                style: "cancel",
+                                              },
+                                              {
+                                                text: "Sim",
+                                                onPress: () => console.log('remover'),
+                                              },
+                                            ],
+                                          );
                                     }} />
                                 </View>
                             </View>
@@ -82,7 +96,7 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: '#4C33CC',
+        backgroundColor: '#2A00A2',
         borderTopLeftRadius: 16,
         borderTopRightRadius: 16,
         width: '100%'
@@ -120,5 +134,3 @@ const styles = StyleSheet.create({
 
 
 })
-
-export default Note;

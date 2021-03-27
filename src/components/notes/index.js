@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Note from '../note';
 
 export default class Notes extends React.Component {

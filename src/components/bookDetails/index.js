@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import livro from '../../assets/livro.png';
+import React from 'react';
+import { View, Text, StyleSheet, Image, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ButtonIcon from '../buttonIcon';
 import Line from '../line'
@@ -8,7 +7,7 @@ import CurrentPage from '../currentPage';
 
 Icon.loadFont();
 
-class BookDetails extends React.Component {
+export default class BookDetails extends React.Component {
 
     constructor(props) {
         super(props);
@@ -25,7 +24,21 @@ class BookDetails extends React.Component {
                             navigation.navigate('BookForm', {type: 'update', book})
                         }} />
                         <ButtonIcon type="delete" onPress={() => {
-                            console.log('teste')
+                             Alert.alert(
+                                "Confirmação",
+                                "Tem certeza que deseja excluir?",
+                                [
+                                  {
+                                    text: "Não",
+                                    onPress: () => console.log('n'),
+                                    style: "cancel",
+                                  },
+                                  {
+                                    text: "Sim",
+                                    onPress: () => console.log('remover'),
+                                  },
+                                ],
+                              );
                         }} />
                     </View>
                 </View>
@@ -57,7 +70,7 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: '#4C33CC',
+        backgroundColor: '#2A00A2',
         width: '100%',
         borderTopLeftRadius: 16,
         borderTopRightRadius: 16
@@ -88,6 +101,4 @@ const styles = StyleSheet.create({
     buttons: {
         flexDirection: 'row'
     }
-})
-
-export default BookDetails;
+});

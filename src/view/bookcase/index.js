@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, StatusBar, TextInput, TouchableOpacity, StyleSheet, Button} from 'react-native';
+import {View, StatusBar, TextInput, TouchableOpacity, StyleSheet, Keyboard} from 'react-native';
 import BookList from '../../components/bookList';
 import FloatingButton from '../../components/floatingButton';
 import HeaderDrawNav from '../../components/headerDrawNav';
@@ -13,7 +13,8 @@ export default class Bookcase extends React.Component {
         super(props);
 
         this.state = {
-            filter: '1',
+            filter: '',
+            auxBooks: [],
             results: {
                 books: [
                 {
@@ -129,7 +130,7 @@ export default class Bookcase extends React.Component {
                 },
                 {
                     id: '5',
-                    title: 'O livro 5',
+                    title: 'The Book',
                     author: 'Fulano Primeiro',
                     totalPages: '100',
                     currentPage: '0',
@@ -143,12 +144,27 @@ export default class Bookcase extends React.Component {
         }
     }
 
+    componentDidMount() {
+        this.setState({
+            auxBooks: this.state.results.books,
+        })
+    }
+
 
 
     onChangeHandler(field, value) {
         this.setState({
             [field]: value
         })
+    }
+
+    onFilter(value) {
+        let filtro = this.state.results.books.filter(item => item.title.toUpperCase().includes(value.toUpperCase()));
+
+        this.setState({
+            auxBooks: filtro,
+            filter: ''
+        });
     }
 
     render() {
@@ -158,16 +174,26 @@ export default class Bookcase extends React.Component {
                 <HeaderDrawNav title="Estante" navigation={this.props.navigation}/>
                 <View style={styles.container} >
                     <View style={{flexDirection: 'row', marginHorizontal: 30, marginVertical: 12}}>
-                        <TextInput placeholder='Buscar por livro' style={styles.input}/>
+                        <TextInput 
+                            placeholder='Buscar por livro' 
+                            style={styles.input}
+                            value={this.state.filter}
+                            blurOnSubmit
+                            onChangeText={value => { this.onChangeHandler('filter', value) }}
+                            returnKeyType="send"
+                            onSubmitEditing={() => {
+                                this.onFilter(this.state.filter)
+                            }}
+                        />
                         <TouchableOpacity style={styles.button} onPress={() => {
-                            
-                        
+                            this.onFilter(this.state.filter)
+                            Keyboard.dismiss()
                         }}>
                             <Icon name='search' size={20} color="#fff" />
                         </TouchableOpacity>
                     </View>
                     <BookList 
-                        books={ this.state.results.books}
+                        books={ this.state.auxBooks}
                         onPressItem={(parameters) =>  this.props.navigation.navigate('BookDetail', parameters)}
                     />
                 
