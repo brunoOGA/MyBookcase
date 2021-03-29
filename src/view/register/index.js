@@ -43,7 +43,7 @@ export default class Register extends React.Component {
                 .auth()
                 .createUserWithEmailAndPassword(email, password)
                 .then(user => {
-                    this.props.navigation.navigate("Menu");
+                    this.props.navigation.navigate("Login");
                 })
                 .catch(error => {
                     this.setState({ message: 'Erro no cadastro.', email: '', password: '', confirmPassword: '' })
@@ -105,6 +105,9 @@ export default class Register extends React.Component {
                             <Text style={styles.text}>acessar o gerenciador de leitura</Text>
                             <View style={{ marginBottom: 40 }}>
                                 <InputIcon
+                                    autoCorrect={false}
+                                    autoCapitalize="none"
+                                    keyboardType="email-address"
                                     label='E-mail'
                                     icon="envelope"
                                     value={this.state.email}

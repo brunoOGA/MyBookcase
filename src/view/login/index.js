@@ -44,13 +44,24 @@ export default class LoginScreen extends React.Component {
                 this.props.navigation.navigate("Menu");
             })
             .catch(error => {
-                this.setState({ message: 'Suas credenciais de login não coincidem com uma conta em nosso sistema.', password: '' })
+                this.setState({ message:  this.getMessageByError(error.code), password: '' })
             })
             .finally(() => {
                 this.setState({ isLoading: false })
             })
 
 
+    }
+
+    getMessageByError(code) {
+        switch(code) {
+            case 'auth/user-not-found':
+                return 'Suas credenciais de login não coincidem com uma conta em nosso sistema.';
+            case 'auth/wrong-password':
+                return 'Suas credenciais de login não coincidem com uma conta em nosso sistema.';
+            default:
+                return 'Erro desconhecido.'
+        }
     }
 
     renderButton() {
