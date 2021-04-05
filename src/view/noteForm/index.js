@@ -4,56 +4,45 @@ import ButtonText from '../../components/buttonText';
 import InputLabel from '../../components/inputLabel'
 import Header from '../../components/header';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { setField, saveAnnotation, setAllFields, resetForm } from '../../actions/annotation';
+import { connect } from 'react-redux';
 
-export default class NoteForm extends React.Component {
+class NoteForm extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             type: '',
-            note: {
-                initialPage: '',
-                finalPage: '',
-                quote: '',
-                note: '',
-                title: ''
-            }
         }
     }
-    componentDidMount() {
-        const { type, title } = this.props.route.params;
-        if (type == 'update') {
-            this.setState({
-                type: 'update',
-                note: {
-                    ...this.props.route.params.note,
-                    title
-                }
-            });
-        } else {
-            const { initialPage } = this.props.route.params;
-            this.setState({
-                note: {
-                    ...this.state.note,
-                    initialPage,
-                    title
-                }
-            });
-        }
-    }
+    
+    async componentDidMount() {
+        const { setAllFields, resetForm } = this.props;
 
+        if (this.props.route.params && this.props.route.params.note) {
+            console.log(this.props.route.params.note)
+            this.setState({ type: 'update' })
+            setAllFields(this.props.route.params.note)
+        } else {
+            resetForm();
+            setField('initialPage', this.props.route.params.book.currentPage)
+        }
+
+    }
+/*
     onChangeHandler(field, value) {
         this.setState({
             note: {
-                ...this.state.note,
+                ...annotationForm,
                 [field]: value
             }
         })
     }
+*/
 
     render() {
         let quoteRef, initialPageRef, finalPageRef, noteRef;
-
+        const { annotationForm, setField, saveAnnotation, navigation } = this.props;
         return (
             
             <>
@@ -74,12 +63,12 @@ export default class NoteForm extends React.Component {
 
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
 
-                        <Text style={{ alignItems: 'flex-start', width: '100%', paddingHorizontal: 60, paddingBottom: 12, lineHeight: 30, fontSize: 26, fontWeight: 'bold' }}>{this.state.note.title}</Text>
+                        <Text style={{ alignItems: 'flex-start', width: '100%', paddingHorizontal: 60, paddingBottom: 12, lineHeight: 30, fontSize: 26, fontWeight: 'bold' }}>{this.props.route.params.book.title}</Text>
 
                         <InputLabel label='Citação'
-                            value={this.state.note.quote}
+                            value={annotationForm.quote}
                             type="default"
-                            onChangeText={value => this.onChangeHandler('quote', value)}
+                            onChangeText={value => setField('quote', value)}
                             height={100}
                             textArea={true}
                             returnKeyType="next"
@@ -91,9 +80,9 @@ export default class NoteForm extends React.Component {
                         <View style={{ width: 311 }}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
                                 <InputLabel label='Página Inicial'
-                                    value={this.state.note.initialPage}
+                                    value={annotationForm.initialPage}
                                     type="numeric"
-                                    onChangeText={value => this.onChangeHandler('initialPage', value)}
+                                    onChangeText={value => setField('initialPage', value)}
                                     returnKeyType="next"
                                     inputRef={ref => initialPageRef = ref}
                                     onSubmitEditing={() => {
@@ -101,9 +90,9 @@ export default class NoteForm extends React.Component {
                                     }}
                                 />
                                 <InputLabel label='Página Final'
-                                    value={this.state.note.finalPage}
+                                    value={annotationForm.finalPage}
                                     type="numeric"
-                                    onChangeText={value => this.onChangeHandler('finalPage', value)}
+                                    onChangeText={value => setField('finalPage', value)}
                                     returnKeyType="next"
                                     inputRef={ref => finalPageRef = ref}
                                     onSubmitEditing={() => {
@@ -112,9 +101,9 @@ export default class NoteForm extends React.Component {
                                 />
                             </View>
                             <InputLabel label='Observação'
-                                value={this.state.note.note}
+                                value={annotationForm.note}
                                 type="default"
-                                onChangeText={value => this.onChangeHandler('note', value)}
+                                onChangeText={value => setField('note', value)}
                                 height={280}
                                 textArea={true}
                                 returnKeyType="send"
@@ -129,8 +118,10 @@ export default class NoteForm extends React.Component {
                                     console.log('teste')
                                 }} />
                                 :
-                                <ButtonText label="Adicionar" style={{ width: 311 }} onPress={() => {
-                                    console.log('teste')
+                                <ButtonText label="Adicionar" style={{ width: 311 }} onPress={async () => {
+                                  
+                                    await saveAnnotation(this.props.route.params.book, annotationForm);
+                                        navigation.pop()
                                 }} />
                             }
                         </View>
@@ -142,3 +133,19 @@ export default class NoteForm extends React.Component {
     }
 
 }
+
+
+const mapStateToProps = (state) => {
+    return ({
+        annotationForm: state.annotationForm
+    })
+}
+
+const mapDispatchToProps = {
+    setField,
+    saveAnnotation,
+    setAllFields,
+    resetForm
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NoteForm);

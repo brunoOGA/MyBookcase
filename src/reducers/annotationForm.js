@@ -1,13 +1,10 @@
-import { SET_FIELD, BOOK_SAVED_SUCESS, SET_ALL_FIELDS, RESET_FORM } from "../actions";
+import { SET_FIELD, ANNOTATION_SAVED_SUCESS, SET_ALL_FIELDS_ANNOTATION, RESET_FORM } from "../actions/annotation";
 
 const INITIAL_STATE = {
-    title: '',
-    author: '',
-    currentPage: '0',
-    totalPages: '',
-    year: '',
-    literaryGenre: '',
-    cover: '',
+    initialPage: '',
+    finalPage: '',
+    quote: '',
+    note: '',
 }
 
 export default function (state = INITIAL_STATE, action) {
@@ -16,10 +13,10 @@ export default function (state = INITIAL_STATE, action) {
             const clonedState = { ...state };
             clonedState[action.field] = action.value;
             return clonedState;
-        case BOOK_SAVED_SUCESS:
-            return INITIAL_STATE;s
-        case SET_ALL_FIELDS:
-            return action.book;
+        case ANNOTATION_SAVED_SUCESS:
+            return INITIAL_STATE;
+        case SET_ALL_FIELDS_ANNOTATION:
+            return action.annotation;
         case RESET_FORM:
             return INITIAL_STATE;
         default:

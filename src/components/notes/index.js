@@ -3,9 +3,9 @@ import { StyleSheet, View } from 'react-native';
 import Note from '../note';
 
 export default class Notes extends React.Component {
-    renderList(lista, navigation, title) {
+    renderList(lista, navigation, book) {
         const notes = lista.map(item => {
-            return <Note note={item} key={item.id} navigation={navigation} title={title}/>
+            return <Note note={item} key={item.id} navigation={navigation} book={book}/>
         })
 
         return notes;
@@ -13,7 +13,7 @@ export default class Notes extends React.Component {
     
 
     render() {
-        const { notes, navigation, title } = this.props;
+        const { notes, navigation, book } = this.props;
          /*
         <FlatList 
         style={styles.container} 
@@ -28,7 +28,7 @@ export default class Notes extends React.Component {
         
         return (
              <View>
-                 {this.renderList(notes, navigation, title)}
+                 {this.renderList(notes, navigation, book)}
              </View>
         );
     }  

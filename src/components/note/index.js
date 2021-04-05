@@ -18,7 +18,7 @@ export default class Note extends React.Component {
 
     render() {
         
-        const { note, navigation, title } = this.props;
+        const { note, navigation, book } = this.props;
 
         return (
             <View style={styles.container}>
@@ -36,7 +36,7 @@ export default class Note extends React.Component {
                                 </View>
                                 <View style={styles.buttons}>
                                     <ButtonIcon type="change" onPress={() => {
-                                         navigation.navigate('NoteForm', {type: 'update', note, title})
+                                         navigation.navigate('NoteForm', {type: 'update', book, note})
                                     }} />
                                     <ButtonIcon type="delete" onPress={() => {
                                         Alert.alert(

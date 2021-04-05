@@ -16,7 +16,6 @@ export const watchBooks = () => {
             .ref(`/users/${currentUser.uid}/books`)
             .on('value', snapshot => {
                 const books = snapshot.val();
-                console.log(books)
                 const action = setBooks(books);
 
                 dispatch(action);
@@ -24,7 +23,7 @@ export const watchBooks = () => {
     }
 }
 
-export const deleteSerie = book => {
+export const deleteBook = book => {
     return dispatch => {
         return new Promise((resolve, reject) => {
             Alert.alert('Exclusão', `Deseja excluir a série ${book.title}?`,

@@ -14,6 +14,7 @@ export default class BookListItem extends React.Component {
         let percentageText;
         const aux = Math.round((book.currentPage / book.totalPages) * 100);
 
+
         if (aux == 0) {
             percentage.color = '#C30052',
                 percentageText = 'Não lido'

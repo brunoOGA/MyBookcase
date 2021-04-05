@@ -7,7 +7,6 @@ import Header from '../../components/header';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { RNCamera } from 'react-native-camera';
-import CameraRollPicker from 'react-native-camera-roll-picker';
 import ImgToBase64 from 'react-native-image-base64';
 
 import { connect } from 'react-redux';
@@ -22,7 +21,6 @@ class BookForm extends React.Component {
             type: '',
             isLoading: false,
             isCamera: false,
-            isCameraRoll: false,
         }
     }
 
@@ -38,35 +36,35 @@ class BookForm extends React.Component {
         }
     }
 
-
-    viewGallery() {
-        this.requestExternalStorageAccess();
-
-        return (
-            <CameraRollPicker
-                maximum={1}
-                selectSingleItem={true}
-
-                callback={(volta) => {
-                    if (volta.length > 0) {
-                        console.log(volta);
-                        ImgToBase64.getBase64String(volta[0].uri)
-                            .then(stringConvertida => {
-                                this.props.setField('cover', stringConvertida)
-                            })
-                            .catch(err => {
-                                console.log(err)
-                            })
-                    }
-
-                    this.setState({
-                        isCameraRoll: false,
-                    })
-                }}
-            />
-        );
-    }
-
+    /*
+        viewGallery() {
+            this.requestExternalStorageAccess();
+    
+            return (
+                <CameraRollPicker
+                    maximum={1}
+                    selectSingleItem={true}
+    
+                    callback={(volta) => {
+                        if (volta.length > 0) {
+                            console.log(volta);
+                            ImgToBase64.getBase64String(volta[0].uri)
+                                .then(stringConvertida => {
+                                    this.props.setField('cover', stringConvertida)
+                                })
+                                .catch(err => {
+                                    console.log(err)
+                                })
+                        }
+    
+                        this.setState({
+                            isCameraRoll: false,
+                        })
+                    }}
+                />
+            );
+        }
+    */
     async requestExternalStorageAccess() {
         try {
             const permission = await PermissionsAndroid
@@ -181,21 +179,17 @@ class BookForm extends React.Component {
 
                                     Alert.alert(
                                         'Captura de imagem',
-                                        'De onde você quer pegar a imagem?',
+                                        'Abrir câmera?',
                                         [
                                             {
-                                                text: 'Camera',
+                                                text: "Não",
+                                                style: "cancel",
+                                            },
+                                            {
+                                                text: 'Sim',
                                                 onPress: () => {
                                                     this.setState({
                                                         isCamera: true,
-                                                    })
-                                                }
-                                            },
-                                            {
-                                                text: 'Galeria',
-                                                onPress: () => {
-                                                    this.setState({
-                                                        isCameraRoll: true,
                                                     })
                                                 }
                                             }
@@ -211,21 +205,17 @@ class BookForm extends React.Component {
 
                                                 Alert.alert(
                                                     'Captura de imagem',
-                                                    'De onde você quer pegar a imagem?',
+                                                    'Abrir câmera?',
                                                     [
                                                         {
-                                                            text: 'Camera',
+                                                            text: "Não",
+                                                            style: "cancel",
+                                                        },
+                                                        {
+                                                            text: 'Sim',
                                                             onPress: () => {
                                                                 this.setState({
                                                                     isCamera: true,
-                                                                })
-                                                            }
-                                                        },
-                                                        {
-                                                            text: 'Galeria',
-                                                            onPress: () => {
-                                                                this.setState({
-                                                                    isCameraRoll: true,
                                                                 })
                                                             }
                                                         }
@@ -241,21 +231,17 @@ class BookForm extends React.Component {
 
                                     Alert.alert(
                                         'Captura de imagem',
-                                        'De onde você quer pegar a imagem?',
+                                        'Abrir câmera?',
                                         [
                                             {
-                                                text: 'Camera',
+                                                text: "Não",
+                                                style: "cancel",
+                                            },
+                                            {
+                                                text: 'Sim',
                                                 onPress: () => {
                                                     this.setState({
                                                         isCamera: true,
-                                                    })
-                                                }
-                                            },
-                                            {
-                                                text: 'Galeria',
-                                                onPress: () => {
-                                                    this.setState({
-                                                        isCameraRoll: true,
                                                     })
                                                 }
                                             }
@@ -273,21 +259,17 @@ class BookForm extends React.Component {
 
                                                 Alert.alert(
                                                     'Captura de imagem',
-                                                    'De onde você quer pegar a imagem?',
+                                                    'Abrir câmera?',
                                                     [
                                                         {
-                                                            text: 'Camera',
+                                                            text: "Não",
+                                                            style: "cancel",
+                                                        },
+                                                        {
+                                                            text: 'Sim',
                                                             onPress: () => {
                                                                 this.setState({
                                                                     isCamera: true,
-                                                                })
-                                                            }
-                                                        },
-                                                        {
-                                                            text: 'Galeria',
-                                                            onPress: () => {
-                                                                this.setState({
-                                                                    isCameraRoll: true,
                                                                 })
                                                             }
                                                         }
@@ -383,10 +365,6 @@ class BookForm extends React.Component {
         )
     }
     render() {
-
-        if (this.state.isCameraRoll) {
-            return (this.viewGallery())
-        }
 
         if (this.state.isCamera) {
             return (this.viewCamera())
