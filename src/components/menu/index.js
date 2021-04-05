@@ -7,6 +7,8 @@ import BookFormDraw from '../../view/bookFormDraw';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import estante from '../../assets/estante.png';
 import logo from '../../assets/logo1.png';
+import { connect } from 'react-redux';
+import {processLogout} from '../../actions';
 
 
 
@@ -15,7 +17,7 @@ Icon.loadFont();
 
 const Drawer = createDrawerNavigator();
 
-export default class Menu extends React.Component{
+class Menu extends React.Component{
 
     render() {
         return (
@@ -47,6 +49,7 @@ function CustomDrawerContent(props) {
             <DrawerItem 
                 label="Sair" 
                 onPress={() => {
+                    processLogout()
                     props.navigation.popToTop()
                 }} 
                 labelStyle={{color: '#ED2E7E', fontSize: 18}} icon={() => <Icon name="power-off" size={30} color="#ED2E7E" />}
@@ -95,3 +98,5 @@ const styles = StyleSheet.create({
         fontSize: 22,
     }
 })
+
+export default connect(null, { processLogout })(Menu);

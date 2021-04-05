@@ -4,13 +4,14 @@ import ButtonText from '../../components/buttonText';
 import InputIcon from '../../components/inputIcon';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import firebase from 'firebase';
+import { connect } from 'react-redux';
+import { processLogin } from '../../actions';
 
 Icon.loadFont();
 
 import logo from '../../assets/logo2.png';
 
-export default class LoginScreen extends React.Component {
+class LoginScreen extends React.Component {
 
     constructor(props) {
         super(props);
@@ -37,24 +38,21 @@ export default class LoginScreen extends React.Component {
 
         const { email, password } = this.state;
 
-        firebase
-            .auth()
-            .signInWithEmailAndPassword(email, password)
-            .then(user => {
-                this.props.navigation.navigate("Menu");
+        this.props.processLogin({ email, password })
+            .then(() => {
+                this.props.navigation.navigate('Menu');
             })
             .catch(error => {
-                this.setState({ message:  this.getMessageByError(error.code), password: '' })
+                this.setState({ message: this.getMessageByError(error.code), password: '' })
             })
             .finally(() => {
                 this.setState({ isLoading: false })
-            })
-
+            });
 
     }
 
     getMessageByError(code) {
-        switch(code) {
+        switch (code) {
             case 'auth/user-not-found':
                 return 'Suas credenciais de login não coincidem com uma conta em nosso sistema.';
             case 'auth/wrong-password':
@@ -232,3 +230,5 @@ const styles = StyleSheet.create({
         left: 30
     }
 })
+
+export default connect(null, { processLogin })(LoginScreen);

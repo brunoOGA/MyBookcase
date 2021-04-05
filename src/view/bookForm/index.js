@@ -1,49 +1,161 @@
 import * as React from 'react';
-import { View, Text, TouchableOpacity, StatusBar, Image, KeyboardAvoidingView } from 'react-native';
+import { View, Text, TouchableOpacity, StatusBar, Image, KeyboardAvoidingView, Alert, StyleSheet } from 'react-native';
 import ButtonIcon from '../../components/buttonIcon';
 import ButtonText from '../../components/buttonText';
 import InputLabel from '../../components/inputLabel';
 import Header from '../../components/header';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
+import { RNCamera } from 'react-native-camera';
+import CameraRollPicker from 'react-native-camera-roll-picker';
+import ImgToBase64 from 'react-native-image-base64';
+
+import { connect } from 'react-redux';
+import { setField, saveBook, setAllFields, resetForm } from '../../actions';
 
 
-export default class BookForm extends React.Component {
+class BookForm extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             type: '',
-            book: {
-                title: '',
-                author: '',
-                totalPages: '',
-                year: '',
-                literaryGenre: '',
-                cover: 'https://ik.imagekit.io/nfoyn1wc6g/livro_JY15bTJA0.png'
-            }
+            isLoading: false,
+            isCamera: false,
+            isCameraRoll: false,
         }
     }
+
     componentDidMount() {
-        const { type } = this.props.route.params;
-        if (type == 'update') {
-            this.setState({
-                type: 'update',
-                book: this.props.route.params.book
-            });
+
+        const { setAllFields, resetForm } = this.props;
+
+        if (this.props.route.params && this.props.route.params.book) {
+            this.setState({ type: 'update', })
+            setAllFields(this.props.route.params.book)
+        } else {
+            resetForm();
         }
     }
 
-    onChangeHandler(field, value) {
-        this.setState({
-            book: {
-                ...this.state.book,
-                [field]: value
-            }
-        })
+
+    viewGallery() {
+        this.requestExternalStorageAccess();
+
+        return (
+            <CameraRollPicker
+                maximum={1}
+                selectSingleItem={true}
+
+                callback={(volta) => {
+                    if (volta.length > 0) {
+                        console.log(volta);
+                        ImgToBase64.getBase64String(volta[0].uri)
+                            .then(stringConvertida => {
+                                this.props.setField('cover', stringConvertida)
+                            })
+                            .catch(err => {
+                                console.log(err)
+                            })
+                    }
+
+                    this.setState({
+                        isCameraRoll: false,
+                    })
+                }}
+            />
+        );
     }
 
-    render() {
+    async requestExternalStorageAccess() {
+        try {
+            const permission = await PermissionsAndroid
+                .request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+
+            if (permission !== PermissionsAndroid.RESULTS.GRANTED) {
+                Alert.alert('Permissão negada');
+            }
+
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    viewCamera() {
+        return (
+            <View style={styles.container}>
+                <RNCamera
+                    ref={ref => {
+                        this.camera = ref;
+                    }}
+                    style={styles.preview}
+                    type={RNCamera.Constants.Type.back}
+                    flashMode={RNCamera.Constants.FlashMode.on}
+                    androidCameraPermissionOptions={{
+                        title: 'Permission to use camera',
+                        message: 'Nós precisamos de sua permissão para usar a câmera',
+                        buttonPositive: 'Aceito',
+                        buttonNegative: 'Cancelar'
+                    }}
+                    androidRecordAudioPermissionOptions={{
+                        title: 'Permission to record audio',
+                        message: 'Nós precisamos de sua permissão para gravar áudio',
+                        buttonPositive: 'Aceito',
+                        buttonNegative: 'Cancelar'
+                    }}
+                />
+                <View>
+                    <TouchableOpacity
+                        style={styles.capture}
+                        onPress={this.takePicture.bind(this)}>
+                        <Text>Tirar foto!</Text>
+                    </TouchableOpacity>
+                </View>
+
+            </View>
+        )
+    }
+
+    takePicture = async () => {
+        if (this.camera) {
+            const options = { quality: 0.5, base64: true, forceUpOrientation: true, fixOrientation: true };
+            const data = await this.camera.takePictureAsync(options);
+
+            if (data) {
+                this.props.setField('cover', data.base64);
+
+                this.setState({
+                    isCamera: false,
+                })
+            }
+        }
+    }
+
+
+
+    /*
+        componentDidMount() {
+            const { type } = this.props.route.params;
+            if (type == 'update') {
+                this.setState({
+                    type: 'update',
+                    book: this.props.route.params.book
+                });
+            }
+        }
+    
+        onChangeHandler(field, value) {
+            this.setState({
+                book: {
+                    ...bookForm,
+                    [field]: value
+                }
+            })
+        }
+    */
+
+    viewForm() {
+        const { bookForm, setField, saveBook, navigation } = this.props;
         let titleRef, literaryGenreRef, authorRef, totalPagesRef, yearRef;
 
         return (
@@ -54,43 +166,143 @@ export default class BookForm extends React.Component {
                         {
                             this.state.type == 'update' ?
                                 <Header title="Alterar Livro" onPressItem={() => {
-                                    this.props.navigation.pop()
+                                    navigation.pop()
                                 }} />
                                 :
                                 <Header title="Novo Livro" onPressItem={() => {
-                                    this.props.navigation.pop()
+                                    navigation.pop()
                                 }} />
                         }
                     </View>
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff', paddingVertical: 50 }}>
                         {
-                            this.state.type == 'update' ?
-                                <TouchableOpacity onPress={() => { console.log("teste") }}>
+                            bookForm.cover ?
+                                <TouchableOpacity onPress={() => {
+
+                                    Alert.alert(
+                                        'Captura de imagem',
+                                        'De onde você quer pegar a imagem?',
+                                        [
+                                            {
+                                                text: 'Camera',
+                                                onPress: () => {
+                                                    this.setState({
+                                                        isCamera: true,
+                                                    })
+                                                }
+                                            },
+                                            {
+                                                text: 'Galeria',
+                                                onPress: () => {
+                                                    this.setState({
+                                                        isCameraRoll: true,
+                                                    })
+                                                }
+                                            }
+                                        ]
+                                    )
+
+                                }}>
                                     <View style={{ position: 'relative', bottom: 12 }}>
-                                        <Image source={{ uri: this.state.book.cover }} style={{ width: 121, height: 167, marginVertical: 6, marginLeft: 12, borderRadius: 4 }} />
+                                        <Image source={{ uri: `data:image/jpeg;base64,${bookForm.cover}` }} style={{ width: 121, height: 167, marginVertical: 6, marginLeft: 12, borderRadius: 4 }} />
 
                                         <View style={{ position: 'absolute', bottom: -8, right: -16 }}>
-                                            <ButtonIcon type="camera" onPress={() => { console.log("teste") }} />
+                                            <ButtonIcon type="camera" onPress={() => {
+
+                                                Alert.alert(
+                                                    'Captura de imagem',
+                                                    'De onde você quer pegar a imagem?',
+                                                    [
+                                                        {
+                                                            text: 'Camera',
+                                                            onPress: () => {
+                                                                this.setState({
+                                                                    isCamera: true,
+                                                                })
+                                                            }
+                                                        },
+                                                        {
+                                                            text: 'Galeria',
+                                                            onPress: () => {
+                                                                this.setState({
+                                                                    isCameraRoll: true,
+                                                                })
+                                                            }
+                                                        }
+                                                    ]
+                                                )
+
+                                            }} />
                                         </View>
                                     </View>
                                 </TouchableOpacity>
                                 :
-                                <TouchableOpacity onPress={() => { console.log("teste") }}>
+                                <TouchableOpacity onPress={() => {
+
+                                    Alert.alert(
+                                        'Captura de imagem',
+                                        'De onde você quer pegar a imagem?',
+                                        [
+                                            {
+                                                text: 'Camera',
+                                                onPress: () => {
+                                                    this.setState({
+                                                        isCamera: true,
+                                                    })
+                                                }
+                                            },
+                                            {
+                                                text: 'Galeria',
+                                                onPress: () => {
+                                                    this.setState({
+                                                        isCameraRoll: true,
+                                                    })
+                                                }
+                                            }
+                                        ]
+                                    )
+
+                                }}>
                                     <View style={{ position: 'relative', bottom: 12 }}>
                                         <View style={{ width: 121, height: 167, marginVertical: 6, marginLeft: 12, borderRadius: 4, backgroundColor: '#EFF0F6', alignItems: 'center', justifyContent: 'center' }}>
                                             <Text style={{ color: '#A0A3BD', fontSize: 16 }}>Capa</Text>
                                         </View>
 
                                         <View style={{ position: 'absolute', bottom: -8, right: -16 }}>
-                                            <ButtonIcon type="camera" onPress={() => { console.log("teste") }} />
+                                            <ButtonIcon type="camera" onPress={() => {
+
+                                                Alert.alert(
+                                                    'Captura de imagem',
+                                                    'De onde você quer pegar a imagem?',
+                                                    [
+                                                        {
+                                                            text: 'Camera',
+                                                            onPress: () => {
+                                                                this.setState({
+                                                                    isCamera: true,
+                                                                })
+                                                            }
+                                                        },
+                                                        {
+                                                            text: 'Galeria',
+                                                            onPress: () => {
+                                                                this.setState({
+                                                                    isCameraRoll: true,
+                                                                })
+                                                            }
+                                                        }
+                                                    ]
+                                                )
+
+                                            }} />
                                         </View>
                                     </View>
                                 </TouchableOpacity>
                         }
                         <InputLabel label='Título'
-                            value={this.state.book.title}
+                            value={bookForm.title}
                             type="default"
-                            onChangeText={value => this.onChangeHandler('title', value)}
+                            onChangeText={value => setField('title', value)}
                             returnKeyType="next"
                             inputRef={ref => titleRef = ref}
                             onSubmitEditing={() => {
@@ -98,9 +310,9 @@ export default class BookForm extends React.Component {
                             }}
                         />
                         <InputLabel label='Gênero literário'
-                            value={this.state.book.literaryGenre}
+                            value={bookForm.literaryGenre}
                             type="default"
-                            onChangeText={value => this.onChangeHandler('literaryGenre', value)}
+                            onChangeText={value => setField('literaryGenre', value)}
                             returnKeyType="next"
                             inputRef={ref => literaryGenreRef = ref}
                             onSubmitEditing={() => {
@@ -108,9 +320,9 @@ export default class BookForm extends React.Component {
                             }}
                         />
                         <InputLabel label='Autor'
-                            value={this.state.book.author}
+                            value={bookForm.author}
                             type="default"
-                            onChangeText={value => this.onChangeHandler('author', value)}
+                            onChangeText={value => setField('author', value)}
                             returnKeyType="next"
                             inputRef={ref => authorRef = ref}
                             onSubmitEditing={() => {
@@ -120,9 +332,9 @@ export default class BookForm extends React.Component {
                         <View style={{ width: 311 }}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
                                 <InputLabel label='Nº de Páginas'
-                                    value={this.state.book.totalPages}
+                                    value={bookForm.totalPages}
                                     type="numeric"
-                                    onChangeText={value => this.onChangeHandler('totalPages', value)}
+                                    onChangeText={value => setField('totalPages', value)}
                                     returnKeyType="next"
                                     inputRef={ref => totalPagesRef = ref}
                                     onSubmitEditing={() => {
@@ -130,9 +342,9 @@ export default class BookForm extends React.Component {
                                     }}
                                 />
                                 <InputLabel label='Ano'
-                                    value={this.state.book.year}
+                                    value={bookForm.year}
                                     type="numeric"
-                                    onChangeText={value => this.onChangeHandler('year', value)}
+                                    onChangeText={value => setField('year', value)}
                                     returnKeyType="send"
                                     inputRef={ref => yearRef = ref}
                                     onSubmitEditing={() => {
@@ -142,19 +354,83 @@ export default class BookForm extends React.Component {
                             </View>
 
                             {this.state.type == 'update' ?
-                                <ButtonText label="Alterar" color="yellow" onPress={() => {
-                                    console.log('teste')
+
+
+                                <ButtonText label="Alterar" color="yellow" onPress={async () => {
+                                    try {
+                                        await saveBook(bookForm);
+                                        navigation.pop()
+                                    } catch (error) {
+                                        Alert.alert('Erro', error.message);
+                                    }
                                 }} />
                                 :
-                                <ButtonText label="Adicionar" onPress={() => {
-                                    console.log('teste')
+                                <ButtonText label="Adicionar" onPress={async () => {
+                                    try {
+                                        await saveBook(bookForm);
+                                        navigation.pop()
+                                    } catch (error) {
+                                        Alert.alert('Erro', error.message);
+                                    }
+
                                 }} />
                             }
+
                         </View>
                     </View>
                 </KeyboardAwareScrollView>
             </>
         )
     }
+    render() {
+
+        if (this.state.isCameraRoll) {
+            return (this.viewGallery())
+        }
+
+        if (this.state.isCamera) {
+            return (this.viewCamera())
+        }
+
+        return (this.viewForm())
+
+    }
 
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        flexDirection: 'column',
+        backgroundColor: 'black'
+    },
+    preview: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+    },
+    capture: {
+        flex: 0,
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        padding: 15,
+        paddingHorizontal: 20,
+        alignSelf: 'center',
+        margin: 20
+    }
+});
+
+const mapStateToProps = (state) => {
+    return ({
+        bookForm: state.bookForm
+    })
+}
+
+const mapDispatchToProps = {
+    setField,
+    saveBook,
+    setAllFields,
+    resetForm
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(BookForm);

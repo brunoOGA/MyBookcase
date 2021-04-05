@@ -44,7 +44,7 @@ export default class BookDetails extends React.Component {
                 </View>
                 <View style={styles.content}>
                     <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                        <Image source={{ uri: book.cover }} style={{width: 121, height: 167, marginVertical: 8, borderRadius: 4}}/>
+                        <Image source={{ uri: `data:image/jpeg;base64,${book.cover}` }} style={{width: 121, height: 167, marginVertical: 8, borderRadius: 4}}/>
                     </View>
                     <Line label={'Gênero literário: '}>
                         {book.literaryGenre}

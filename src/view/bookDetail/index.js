@@ -25,7 +25,7 @@ export default class BookDetail extends React.Component {
                 <ScrollView>
                 <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
                     <BookDetails book={book} navigation={this.props.navigation} />
-                    <Notes notes={book.annotations} navigation={this.props.navigation} title={title} />
+                   
                 </View>
                 
                 </ScrollView>
@@ -38,3 +38,5 @@ export default class BookDetail extends React.Component {
     }
     
 }
+
+// <Notes notes={book.annotations} navigation={this.props.navigation} title={title} />

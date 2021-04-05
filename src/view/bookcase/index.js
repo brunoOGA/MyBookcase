@@ -5,9 +5,12 @@ import FloatingButton from '../../components/floatingButton';
 import HeaderDrawNav from '../../components/headerDrawNav';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import { connect } from 'react-redux';
+import { watchBooks } from '../../actions';
+
 Icon.loadFont();
 
-export default class Bookcase extends React.Component {
+class Bookcase extends React.Component {
 
     constructor(props) {
         super(props);
@@ -143,13 +146,19 @@ export default class Bookcase extends React.Component {
             
         }
     }
-
+/*
     componentDidMount() {
         this.setState({
             auxBooks: this.state.results.books,
         })
     }
-
+*/
+componentDidMount() {
+    this.props.watchBooks();
+    this.setState({
+        auxBooks: this.props.books,
+    })
+}
 
 
     onChangeHandler(field, value) {
@@ -193,7 +202,7 @@ export default class Bookcase extends React.Component {
                         </TouchableOpacity>
                     </View>
                     <BookList 
-                        books={ this.state.auxBooks}
+                        books={/* this.state.auxBooks */this.props.books}
                         onPressItem={(parameters) =>  this.props.navigation.navigate('BookDetail', parameters)}
                     />
                 
@@ -235,3 +244,20 @@ const styles = StyleSheet.create({
         marginLeft: 4
     }
 })
+
+const mapStateToProps = state => {
+    const { listaBooks } = state;
+
+    if(listaBooks === null) {
+        return {books: listaBooks};
+    }
+
+    const keys = Object.keys(listaBooks);
+    const listaBooksWidhId = keys.map(key => {
+        return { ...listaBooks[key], id: key }
+    })
+
+    return { books: listaBooksWidhId };
+}
+
+export default connect(mapStateToProps, { watchBooks })(Bookcase);
