@@ -332,7 +332,7 @@ class BookForm extends React.Component {
                                     onSubmitEditing={async () => {
                                         try {
                                             await saveBook(bookForm);
-                                            navigation.navigate('Menu');
+                                            navigation.replace('Menu');
                                         } catch (error) {
                                             Alert.alert('Erro', error.message);
                                         }
@@ -346,7 +346,7 @@ class BookForm extends React.Component {
                                 <ButtonText label="Alterar" color="yellow" onPress={async () => {
                                     try {
                                         await saveBook(bookForm);
-                                        navigation.navigate('Menu');
+                                        navigation.replace('Menu');
                                     } catch (error) {
                                         Alert.alert('Erro', error.message);
                                     }
@@ -355,7 +355,7 @@ class BookForm extends React.Component {
                                 <ButtonText label="Adicionar" onPress={async () => {
                                     try {
                                         await saveBook(bookForm);
-                                        navigation.navigate('Menu');
+                                        navigation.replace('Menu');
                                     } catch (error) {
                                         Alert.alert('Erro', error.message);
                                     }
