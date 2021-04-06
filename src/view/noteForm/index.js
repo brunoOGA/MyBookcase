@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, StatusBar } from 'react-native';
+import { View, Text, StatusBar, Alert } from 'react-native';
 import ButtonText from '../../components/buttonText';
 import InputLabel from '../../components/inputLabel'
 import Header from '../../components/header';
@@ -24,8 +24,7 @@ class NoteForm extends React.Component {
             this.setState({ type: 'update' })
             setAllFields(this.props.route.params.note)
         } else {
-            resetForm();
-            setField('initialPage', this.props.route.params.book.currentPage)
+            resetForm(this.props.route.params.book);
         }
 
     }
@@ -108,20 +107,34 @@ class NoteForm extends React.Component {
                                 textArea={true}
                                 returnKeyType="send"
                                 inputRef={ref => noteRef = ref}
-                                onSubmitEditing={() => {
-                                    console.log('teste')
+                                onSubmitEditing={async () => {
+                                    try {
+                                        await saveAnnotation(this.props.route.params.book, annotationForm);
+                                        navigation.pop()
+                                    } catch (error) {
+                                        Alert.alert('Erro', error.message);
+                                    }
                                 }}
                             />
 
                             {this.state.type == 'update' ?
-                                <ButtonText label="Alterar" color="yellow" onPress={() => {
-                                    console.log('teste')
+                                <ButtonText label="Alterar" color="yellow" onPress={async () => {
+                                    try {
+                                        await saveAnnotation(this.props.route.params.book, annotationForm);
+                                        navigation.pop()
+                                    } catch (error) {
+                                        Alert.alert('Erro', error.message);
+                                    }
                                 }} />
                                 :
                                 <ButtonText label="Adicionar" style={{ width: 311 }} onPress={async () => {
                                   
-                                    await saveAnnotation(this.props.route.params.book, annotationForm);
+                                    try {
+                                        await saveAnnotation(this.props.route.params.book, annotationForm);
                                         navigation.pop()
+                                    } catch (error) {
+                                        Alert.alert('Erro', error.message);
+                                    }
                                 }} />
                             }
                         </View>

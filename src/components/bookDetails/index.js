@@ -5,13 +5,17 @@ import ButtonIcon from '../buttonIcon';
 import Line from '../line'
 import CurrentPage from '../currentPage';
 
+import {connect} from 'react-redux';
+import {deleteBook} from '../../actions';
+
 Icon.loadFont();
 
-export default class BookDetails extends React.Component {
+class BookDetails extends React.Component {
 
     constructor(props) {
         super(props);
     }
+
     render() {
         const { book, navigation, ...props } = this.props;
 
@@ -23,22 +27,12 @@ export default class BookDetails extends React.Component {
                         <ButtonIcon type="change" onPress={() => {
                             navigation.navigate('BookForm', {type: 'update', book})
                         }} />
-                        <ButtonIcon type="delete" onPress={() => {
-                             Alert.alert(
-                                "Confirmação",
-                                "Tem certeza que deseja excluir?",
-                                [
-                                  {
-                                    text: "Não",
-                                    onPress: () => console.log('n'),
-                                    style: "cancel",
-                                  },
-                                  {
-                                    text: "Sim",
-                                    onPress: () => console.log('remover'),
-                                  },
-                                ],
-                              );
+                        <ButtonIcon type="delete" onPress={async () => {
+                             const hasDeleted = await this.props.deleteBook(book);
+
+                             if(hasDeleted) {
+                                 navigation.goBack();
+                             }
                         }} />
                     </View>
                 </View>
@@ -58,7 +52,7 @@ export default class BookDetails extends React.Component {
                     <Line label={'Ano: '}>
                         {book.year}
                     </Line>
-                    <CurrentPage currentPage={book.currentPage} totalPages={book.totalPages} />
+                    <CurrentPage book={book} currentPage={book.currentPage} totalPages={book.totalPages} />
                 </View>
 
             </View>
@@ -102,3 +96,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     }
 });
+
+
+export default connect(null, {deleteBook})(BookDetails);

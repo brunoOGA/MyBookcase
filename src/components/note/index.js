@@ -4,9 +4,12 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import ButtonIcon from '../buttonIcon';
 
+import {connect} from 'react-redux';
+import {deleteAnnotation} from '../../actions/annotation';
+
 Icon.loadFont();
 
-export default class Note extends React.Component {
+class Note extends React.Component {
 
     constructor(props) {
         super(props);
@@ -38,22 +41,8 @@ export default class Note extends React.Component {
                                     <ButtonIcon type="change" onPress={() => {
                                          navigation.navigate('NoteForm', {type: 'update', book, note})
                                     }} />
-                                    <ButtonIcon type="delete" onPress={() => {
-                                        Alert.alert(
-                                            "Confirmação",
-                                            "Tem certeza que deseja excluir?",
-                                            [
-                                              {
-                                                text: "Não",
-                                                onPress: () => console.log('n'),
-                                                style: "cancel",
-                                              },
-                                              {
-                                                text: "Sim",
-                                                onPress: () => console.log('remover'),
-                                              },
-                                            ],
-                                          );
+                                    <ButtonIcon type="delete" onPress={async () => {
+                                       await this.props.deleteAnnotation(book, note);
                                     }} />
                                 </View>
                             </View>
@@ -134,3 +123,5 @@ const styles = StyleSheet.create({
 
 
 })
+
+export default connect(null, {deleteAnnotation})(Note);

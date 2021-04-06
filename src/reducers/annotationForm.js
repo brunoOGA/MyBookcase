@@ -18,7 +18,7 @@ export default function (state = INITIAL_STATE, action) {
         case SET_ALL_FIELDS_ANNOTATION:
             return action.annotation;
         case RESET_FORM:
-            return INITIAL_STATE;
+            return {...INITIAL_STATE, initialPage: action.currentPage};
         default:
             return state;
     }

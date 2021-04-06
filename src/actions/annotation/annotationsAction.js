@@ -26,7 +26,7 @@ export const watchAnnotations = book => {
 export const deleteAnnotation = (book, annotation) => {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            Alert.alert('Exclusão', `Deseja excluir a série ${annotation.title}?`,
+            Alert.alert('Exclusão', `Tem certeza que deseja excluir?`,
                 [
                     {
                         text: 'Não',

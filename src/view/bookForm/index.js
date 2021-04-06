@@ -329,8 +329,13 @@ class BookForm extends React.Component {
                                     onChangeText={value => setField('year', value)}
                                     returnKeyType="send"
                                     inputRef={ref => yearRef = ref}
-                                    onSubmitEditing={() => {
-                                        console.log('teste')
+                                    onSubmitEditing={async () => {
+                                        try {
+                                            await saveBook(bookForm);
+                                            navigation.navigate('Menu');
+                                        } catch (error) {
+                                            Alert.alert('Erro', error.message);
+                                        }
                                     }}
                                 />
                             </View>
@@ -341,7 +346,7 @@ class BookForm extends React.Component {
                                 <ButtonText label="Alterar" color="yellow" onPress={async () => {
                                     try {
                                         await saveBook(bookForm);
-                                        navigation.pop()
+                                        navigation.navigate('Menu');
                                     } catch (error) {
                                         Alert.alert('Erro', error.message);
                                     }
@@ -350,7 +355,7 @@ class BookForm extends React.Component {
                                 <ButtonText label="Adicionar" onPress={async () => {
                                     try {
                                         await saveBook(bookForm);
-                                        navigation.pop()
+                                        navigation.navigate('Menu');
                                     } catch (error) {
                                         Alert.alert('Erro', error.message);
                                     }

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
 Icon.loadFont();
 
 export default class CurrentPage extends React.Component {
@@ -27,7 +26,7 @@ export default class CurrentPage extends React.Component {
         })
     }
 
-    onChangeMinusTen(value) {
+    async onChangeMinusTen(value) {
         let aux = Number(value) - 10;
         if(aux < 0)
             aux = 0;
@@ -37,7 +36,7 @@ export default class CurrentPage extends React.Component {
         })
     }
 
-    onChangeMinusOne(value) {
+    async onChangeMinusOne(value) {
         let aux = Number(value) - 1;
         if(aux < 0)
             aux = 0;
@@ -47,7 +46,7 @@ export default class CurrentPage extends React.Component {
         })
     }
 
-    onChangePlusTen(value) {
+    async onChangePlusTen(value) {
         let aux = Number(value) + 10;
         if(aux > this.props.totalPages)
             aux = this.props.totalPages;
@@ -56,8 +55,8 @@ export default class CurrentPage extends React.Component {
             currentPage: String(aux)
         })
     }
-
-    onChangePlusOne(value) {
+s
+    async onChangePlusOne(value) {
         let aux = Number(value) + 1;
         if(aux > this.props.totalPages)
             aux = this.props.totalPages;
@@ -71,10 +70,10 @@ export default class CurrentPage extends React.Component {
             <View style={{alignItems: 'center'}}>
                 <Text style={{fontSize: 22, fontWeight: 'bold', marginBottom: 8}}>Página Atual</Text>
                 <View style={{flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center'}}>
-                    <TouchableOpacity style={styles.buttonSubtraction} onPress={() => {this.onChangeMinusTen(this.state.currentPage)}} >
+                    <TouchableOpacity style={styles.buttonSubtraction} onPress={async () => {this.onChangeMinusTen(this.state.currentPage)}} >
                         <Text style={styles.buttonText}>-10</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity  style={styles.buttonSubtraction}onPress={() => {this.onChangeMinusOne(this.state.currentPage)}} >
+                    <TouchableOpacity  style={styles.buttonSubtraction}onPress={async () => {this.onChangeMinusOne(this.state.currentPage)}} >
                         <Text style={styles.buttonText}>-</Text>
                     </TouchableOpacity>
                     <TextInput 
@@ -82,10 +81,10 @@ export default class CurrentPage extends React.Component {
                         value={this.state.currentPage}
                         onChangeText={value => { this.onChangeHandler(value) }}
                     />
-                    <TouchableOpacity style={styles.buttonPlus} onPress={() => {this.onChangePlusOne(this.state.currentPage)}}  >
+                    <TouchableOpacity style={styles.buttonPlus} onPress={async () => {this.onChangePlusOne(this.state.currentPage)}}  >
                         <Text style={styles.buttonText}>+</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity  style={styles.buttonPlus} onPress={() => {this.onChangePlusTen(this.state.currentPage)}} >
+                    <TouchableOpacity  style={styles.buttonPlus} onPress={async () => {this.onChangePlusTen(this.state.currentPage)}} >
                         <Text style={styles.buttonText}>+10</Text>
                     </TouchableOpacity>
                 </View>

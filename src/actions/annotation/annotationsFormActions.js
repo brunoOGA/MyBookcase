@@ -26,8 +26,9 @@ export const setAllFields = annotation => ({
 })
 
 export const RESET_FORM = 'RESET_FORM';
-export const resetForm = () => ({
-  type: RESET_FORM
+export const resetForm = book => ({
+  type: RESET_FORM,
+  currentPage: book.currentPage
 })
 
 export const saveAnnotation = (book, annotation) => {
