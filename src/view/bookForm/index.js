@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, TouchableOpacity, StatusBar, Image, KeyboardAvoidingView, Alert, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StatusBar, Image, ActivityIndicator, Alert, StyleSheet } from 'react-native';
 import ButtonIcon from '../../components/buttonIcon';
 import ButtonText from '../../components/buttonText';
 import InputLabel from '../../components/inputLabel';
@@ -7,7 +7,6 @@ import Header from '../../components/header';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { RNCamera } from 'react-native-camera';
-import ImgToBase64 from 'react-native-image-base64';
 
 import { connect } from 'react-redux';
 import { setField, saveBook, setAllFields, resetForm } from '../../actions';
@@ -330,37 +329,62 @@ class BookForm extends React.Component {
                                     returnKeyType="send"
                                     inputRef={ref => yearRef = ref}
                                     onSubmitEditing={async () => {
+                                        if(!(bookForm.title && bookForm.author && bookForm.totalPages && bookForm.year && bookForm.literaryGenre && bookForm.cover)) {
+                                            Alert.alert('Campos vazios', 'Nenhum dos campos podem ser vazios.');
+                                            return;
+                                        }
+                                        this.setState({ isLoading: true })
                                         try {
                                             await saveBook(bookForm);
                                             navigation.replace('Menu');
                                         } catch (error) {
                                             Alert.alert('Erro', error.message);
+                                        } finally {
+                                            this.setState({ isLoading: false })
                                         }
                                     }}
                                 />
                             </View>
 
-                            {this.state.type == 'update' ?
 
-
-                                <ButtonText label="Alterar" color="yellow" onPress={async () => {
-                                    try {
-                                        await saveBook(bookForm);
-                                        navigation.replace('Menu');
-                                    } catch (error) {
-                                        Alert.alert('Erro', error.message);
-                                    }
-                                }} />
+                            {this.state.isLoading ?
+                                <ActivityIndicator size='large' color="#2A00A2" style={{ height: 56 }} />
                                 :
-                                <ButtonText label="Adicionar" onPress={async () => {
-                                    try {
-                                        await saveBook(bookForm);
-                                        navigation.replace('Menu');
-                                    } catch (error) {
-                                        Alert.alert('Erro', error.message);
-                                    }
+                                this.state.type == 'update' ?
 
-                                }} />
+
+                                    <ButtonText label="Alterar" color="yellow" onPress={async () => {
+                                        if(!(bookForm.title && bookForm.author && bookForm.totalPages && bookForm.year && bookForm.literaryGenre && bookForm.cover)) {
+                                            Alert.alert('Campos vazios', 'Nenhum dos campos podem ser vazios.');
+                                            return;
+                                        }
+                                        this.setState({ isLoading: true })
+                                        try {
+                                            await saveBook(bookForm);
+                                            navigation.replace('Menu');
+                                        } catch (error) {
+                                            Alert.alert('Erro', error.message);
+                                        } finally {
+                                            this.setState({ isLoading: false })
+                                        }
+                                    }} />
+                                    :
+                                    <ButtonText label="Adicionar" onPress={async () => {
+                                        if(!(bookForm.title && bookForm.author && bookForm.totalPages && bookForm.year && bookForm.literaryGenre && bookForm.cover)) {
+                                            Alert.alert('Campos vazios', 'Nenhum dos campos podem ser vazios.');
+                                            return;
+                                        }
+                                        this.setState({ isLoading: true })
+                                        try {
+                                            await saveBook(bookForm);
+                                            navigation.replace('Menu');
+                                        } catch (error) {
+                                            Alert.alert('Erro', error.message);
+                                        } finally {
+                                            this.setState({ isLoading: false })
+                                        }
+
+                                    }} />
                             }
 
                         </View>

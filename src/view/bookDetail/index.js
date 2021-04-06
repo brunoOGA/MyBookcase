@@ -23,7 +23,7 @@ class BookDetail extends React.Component {
             <>
                 <StatusBar backgroundColor='#2A00A2' barStyle="light-content" />
                 <Header title="Livro" onPressItem={() => {
-                    this.props.navigation.pop()
+                    this.props.navigation.replace('Menu');
                 }} />
 
                 <ScrollView>

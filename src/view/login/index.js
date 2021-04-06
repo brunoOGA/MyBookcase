@@ -40,7 +40,7 @@ class LoginScreen extends React.Component {
 
         this.props.processLogin({ email, password })
             .then(() => {
-                this.props.navigation.navigate('Menu');
+                this.props.navigation.replace('Menu');
             })
             .catch(error => {
                 this.setState({ message: this.getMessageByError(error.code), password: '' })

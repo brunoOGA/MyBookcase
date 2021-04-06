@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { connect } from 'react-redux';
+import { setField, saveCurrentPage, setAllFields } from '../../actions';
+
+
 Icon.loadFont();
 
-export default class CurrentPage extends React.Component {
+class CurrentPage extends React.Component {
 
     constructor(props) {
         super(props);
@@ -17,6 +21,8 @@ export default class CurrentPage extends React.Component {
         this.setState({
             currentPage: this.props.currentPage
         })
+
+        this.props.setAllFields(this.props.book)
     }
     
 
@@ -34,6 +40,9 @@ export default class CurrentPage extends React.Component {
         this.setState({
             currentPage: String(aux)
         })
+        
+        await this.props.setField('currentPage', String(aux));
+        await this.props.saveCurrentPage(this.props.bookForm);
     }
 
     async onChangeMinusOne(value) {
@@ -44,6 +53,9 @@ export default class CurrentPage extends React.Component {
         this.setState({
             currentPage: String(aux)
         })
+        
+        await this.props.setField('currentPage', String(aux));
+        await this.props.saveCurrentPage(this.props.bookForm);
     }
 
     async onChangePlusTen(value) {
@@ -54,6 +66,9 @@ export default class CurrentPage extends React.Component {
         this.setState({
             currentPage: String(aux)
         })
+        
+        await this.props.setField('currentPage', String(aux));
+        await this.props.saveCurrentPage(this.props.bookForm);
     }
 s
     async onChangePlusOne(value) {
@@ -64,7 +79,11 @@ s
         this.setState({
             currentPage: String(aux)
         })
+
+        await this.props.setField('currentPage', String(aux));
+        await this.props.saveCurrentPage(this.props.bookForm);
     }
+
     render() {
         return (
             <View style={{alignItems: 'center'}}>
@@ -80,6 +99,7 @@ s
                         style={styles.textInput} 
                         value={this.state.currentPage}
                         onChangeText={value => { this.onChangeHandler(value) }}
+                        editable={false}
                     />
                     <TouchableOpacity style={styles.buttonPlus} onPress={async () => {this.onChangePlusOne(this.state.currentPage)}}  >
                         <Text style={styles.buttonText}>+</Text>
@@ -129,3 +149,17 @@ const styles = StyleSheet.create({
         paddingLeft: 12
       }
 })
+
+const mapStateToProps = (state) => {
+    return ({
+        bookForm: state.bookForm
+    })
+}
+
+const mapDispatchToProps = {
+    setField,
+    saveCurrentPage,
+    setAllFields
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CurrentPage);

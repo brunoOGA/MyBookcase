@@ -50,3 +50,25 @@ export const saveBook = book => {
         dispatch(bookSavedSucess());
     }
 }
+
+export const CURRENTPAGE_SAVED_SUCESS = 'CURRENTPAGE_SAVED_SUCESS';
+
+export const currentPageSavedSucess = () => {
+    return {
+        type: CURRENTPAGE_SAVED_SUCESS
+    }
+}
+
+export const saveCurrentPage = book => {
+    const { currentUser } = firebase.auth();
+
+    return async dispatch => {
+        await firebase
+            .database()
+            .ref(`/users/${currentUser.uid}/books/${book.id}`)
+            .set(book);
+
+            dispatch(currentPageSavedSucess());
+    }
+}
+

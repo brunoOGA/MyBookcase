@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, StatusBar, Alert } from 'react-native';
+import { View, Text, StatusBar, Alert, ActivityIndicator } from 'react-native';
 import ButtonText from '../../components/buttonText';
 import InputLabel from '../../components/inputLabel'
 import Header from '../../components/header';
@@ -13,9 +13,10 @@ class NoteForm extends React.Component {
 
         this.state = {
             type: '',
+            isLoading: false,
         }
     }
-    
+
     async componentDidMount() {
         const { setAllFields, resetForm } = this.props;
 
@@ -28,22 +29,22 @@ class NoteForm extends React.Component {
         }
 
     }
-/*
-    onChangeHandler(field, value) {
-        this.setState({
-            note: {
-                ...annotationForm,
-                [field]: value
-            }
-        })
-    }
-*/
+    /*
+        onChangeHandler(field, value) {
+            this.setState({
+                note: {
+                    ...annotationForm,
+                    [field]: value
+                }
+            })
+        }
+    */
 
     render() {
         let quoteRef, initialPageRef, finalPageRef, noteRef;
         const { annotationForm, setField, saveAnnotation, navigation } = this.props;
         return (
-            
+
             <>
                 <KeyboardAwareScrollView>
                     <StatusBar backgroundColor='#2A00A2' barStyle="light-content" />
@@ -108,34 +109,57 @@ class NoteForm extends React.Component {
                                 returnKeyType="send"
                                 inputRef={ref => noteRef = ref}
                                 onSubmitEditing={async () => {
+                                    if(!(annotationForm.initialPage && annotationForm.quote && annotationForm.note)) {
+                                        Alert.alert('Campos vazios', 'Os campos de citação, página inicial e anotação não podem ser vazios.');
+                                        return;
+                                    }
+                                    this.setState({ isLoading: true })
                                     try {
                                         await saveAnnotation(this.props.route.params.book, annotationForm);
                                         navigation.pop()
                                     } catch (error) {
                                         Alert.alert('Erro', error.message);
+                                    } finally {
+                                        this.setState({ isLoading: false })
                                     }
                                 }}
                             />
 
-                            {this.state.type == 'update' ?
-                                <ButtonText label="Alterar" color="yellow" onPress={async () => {
-                                    try {
-                                        await saveAnnotation(this.props.route.params.book, annotationForm);
-                                        navigation.pop()
-                                    } catch (error) {
-                                        Alert.alert('Erro', error.message);
-                                    }
-                                }} />
+                            {this.state.isLoading ?
+                                <ActivityIndicator size='large' color="#2A00A2" style={{ height: 56 }} />
                                 :
-                                <ButtonText label="Adicionar" style={{ width: 311 }} onPress={async () => {
-                                  
-                                    try {
-                                        await saveAnnotation(this.props.route.params.book, annotationForm);
-                                        navigation.pop()
-                                    } catch (error) {
-                                        Alert.alert('Erro', error.message);
-                                    }
-                                }} />
+                                this.state.type == 'update' ?
+                                    <ButtonText label="Alterar" color="yellow" onPress={async () => {
+                                        if(!(annotationForm.initialPage && annotationForm.quote && annotationForm.note)) {
+                                            Alert.alert('Campos vazios', 'Os campos de citação, página inicial e anotação não podem ser vazios.');
+                                            return;
+                                        }
+                                        this.setState({ isLoading: true })
+                                        try {
+                                            await saveAnnotation(this.props.route.params.book, annotationForm);
+                                            navigation.pop()
+                                        } catch (error) {
+                                            Alert.alert('Erro', error.message);
+                                        } finally {
+                                            this.setState({ isLoading: false })
+                                        }
+                                    }} />
+                                    :
+                                    <ButtonText label="Adicionar" style={{ width: 311 }} onPress={async () => {
+                                        if(!(annotationForm.initialPage && annotationForm.quote && annotationForm.note)) {
+                                            Alert.alert('Campos vazios', 'Os campos de citação, página inicial e anotação não podem ser vazios.');
+                                            return;
+                                        }
+                                        this.setState({ isLoading: true })
+                                        try {
+                                            await saveAnnotation(this.props.route.params.book, annotationForm);
+                                            navigation.pop()
+                                        } catch (error) {
+                                            Alert.alert('Erro', error.message);
+                                        } finally {
+                                            this.setState({ isLoading: false })
+                                        }
+                                    }} />
                             }
                         </View>
 

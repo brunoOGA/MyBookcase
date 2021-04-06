@@ -13,8 +13,6 @@ export default class BookListItem extends React.Component {
         }
         let percentageText;
         const aux = Math.round((book.currentPage / book.totalPages) * 100);
-
-
         if (aux == 0) {
             percentage.color = '#C30052',
                 percentageText = 'Não lido'
@@ -35,19 +33,20 @@ export default class BookListItem extends React.Component {
 
         return (
             <TouchableOpacity {...props} style={styles.button} onPress={() => {
-                onPressItem({book})
+                onPressItem({ book })
             }}>
                 <Image source={{ uri: `data:image/jpeg;base64,${book.cover}` }} style={{ width: 90, height: 126, marginVertical: 6, marginLeft: 12, borderRadius: 4 }} />
                 <View style={styles.content}>
                     <Text style={styles.title}>{book.title}</Text>
                     <Text style={styles.text}>{book.author}</Text>
                     {
-                        /*
-                        book.annotations.length == 1 ?
-                            <Text style={styles.text}>{book.annotations.length} anotação</Text>
+                        book.annotations ?
+                            Object.keys(book.annotations).length == 1 ?
+                                <Text style={styles.text}>{Object.keys(book.annotations).length} anotação</Text>
+                                :
+                                <Text style={styles.text}>{Object.keys(book.annotations).length} anotações</Text>
                             :
-                            <Text style={styles.text}>{book.annotations.length} anotações</Text>
-                        */
+                            <Text style={styles.text}>0 anotações</Text>
                     }
                     <Text style={percentage}>{percentageText}</Text>
                 </View>

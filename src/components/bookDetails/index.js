@@ -5,8 +5,8 @@ import ButtonIcon from '../buttonIcon';
 import Line from '../line'
 import CurrentPage from '../currentPage';
 
-import {connect} from 'react-redux';
-import {deleteBook} from '../../actions';
+import { connect } from 'react-redux';
+import { deleteBook } from '../../actions';
 
 Icon.loadFont();
 
@@ -25,20 +25,20 @@ class BookDetails extends React.Component {
                     <Text style={styles.title}>{book.title}</Text>
                     <View style={styles.buttons}>
                         <ButtonIcon type="change" onPress={() => {
-                            navigation.navigate('BookForm', {type: 'update', book})
+                            navigation.navigate('BookForm', { type: 'update', book })
                         }} />
                         <ButtonIcon type="delete" onPress={async () => {
-                             const hasDeleted = await this.props.deleteBook(book);
+                            const hasDeleted = await this.props.deleteBook(book);
 
-                             if(hasDeleted) {
-                                 navigation.goBack();
-                             }
+                            if (hasDeleted) {
+                                navigation.replace('Menu');
+                            }
                         }} />
                     </View>
                 </View>
                 <View style={styles.content}>
-                    <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                        <Image source={{ uri: `data:image/jpeg;base64,${book.cover}` }} style={{width: 121, height: 167, marginVertical: 8, borderRadius: 4}}/>
+                    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                        <Image source={{ uri: `data:image/jpeg;base64,${book.cover}` }} style={{ width: 121, height: 167, marginVertical: 8, borderRadius: 4 }} />
                     </View>
                     <Line label={'Gênero literário: '}>
                         {book.literaryGenre}
@@ -98,4 +98,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default connect(null, {deleteBook})(BookDetails);
+export default connect(null, { deleteBook })(BookDetails);
