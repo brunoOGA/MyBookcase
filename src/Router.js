@@ -11,6 +11,7 @@ import BookDetail from './view/bookDetail';
 import BookForm from './view/bookForm';
 import NoteForm from './view/noteForm';
 import firebase from 'firebase';
+import Annotations from './view/annotations';
 
 const Stack = createStackNavigator();
 
@@ -48,6 +49,7 @@ export default class Router extends React.Component {
             <Stack.Screen name="NoteForm" component={NoteForm} options={{ headerShown: false }} />
             <Stack.Screen name="Menu" component={Menu} options={{ headerShown: false }} />
             <Stack.Screen name="BookForm" component={BookForm} options={{ headerShown: false }} />
+            <Stack.Screen name="Annotations" component={Annotations} options={{ headerShown: false }} />
           </Stack.Navigator>
         </NavigationContainer>
       </>

@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableWithoutFeedback, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableWithoutFeedback, ActivityIndicator, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import ButtonIcon from '../buttonIcon';
 
-import {connect} from 'react-redux';
-import {deleteAnnotation} from '../../actions/annotation';
+import { connect } from 'react-redux';
+import { deleteAnnotation } from '../../actions/annotation';
 
 Icon.loadFont();
 
@@ -16,11 +16,12 @@ class Note extends React.Component {
 
         this.state = {
             open: false,
+            isLoading: false,
         }
     }
 
     render() {
-        
+
         const { note, navigation, book } = this.props;
 
         return (
@@ -31,37 +32,48 @@ class Note extends React.Component {
                     })
                 }}>
                     <View >
-                        <View style={{width: '100%'}}>
+                        <View style={{ width: '100%' }}>
                             <View style={styles.header}>
-                                <View style={{flexDirection: 'row', alignItems: 'center', marginLeft: 12}}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 12 }}>
                                     <Icon name='sticky-note' size={32} color='#fff' />
                                     <Text style={styles.title}>p. {note.initialPage}{note.finalPage && -note.finalPage}</Text>
                                 </View>
                                 <View style={styles.buttons}>
                                     <ButtonIcon type="change" onPress={() => {
-                                         navigation.navigate('NoteForm', {type: 'update', book, note})
+                                        navigation.navigate('NoteForm', { type: 'update', book, note })
                                     }} />
-                                    <ButtonIcon type="delete" onPress={async () => {
-                                       await this.props.deleteAnnotation(book, note);
-                                    }} />
-                                </View>
-                            </View>
-                            <View style={{margin: 15}}>
-                                <Text style={styles.heading}>Citação: </Text>
-                                <Text style={styles.citacao}>{note.quote}</Text>
-                                <View style={{width: '100%', alignItems: 'center', marginTop: 8}}>
-                                    {
-                                        this.state.open ?
-                                        <Icon name='chevron-up' size={16} color='#4E4B66' />
+                                    {this.state.isLoading ?
+                                        <ActivityIndicator size='large' color="#ED2E7E" style={{ height: 44, margin: 4 }} />
                                         :
-                                        <Icon name='chevron-down' size={16} color='#4E4B66' />
+                                        <ButtonIcon type="delete" onPress={async () => {
+                                            this.setState({ isLoading: true })
+                                            try {
+                                                await this.props.deleteAnnotation(book, note);
+                                            } catch (error) {
+                                                Alert.alert('Erro', error.message);
+                                            } finally {
+                                                this.setState({ isLoading: false })
+                                            }
+                                        }} />
                                     }
                                 </View>
                             </View>
-                            
+                            <View style={{ margin: 15 }}>
+                                <Text style={styles.heading}>Citação: </Text>
+                                <Text style={styles.citacao}>{note.quote}</Text>
+                                <View style={{ width: '100%', alignItems: 'center', marginTop: 8 }}>
+                                    {
+                                        this.state.open ?
+                                            <Icon name='chevron-up' size={16} color='#4E4B66' />
+                                            :
+                                            <Icon name='chevron-down' size={16} color='#4E4B66' />
+                                    }
+                                </View>
+                            </View>
+
                         </View>
-                        
-                        { this.state.open && <View style={{marginHorizontal: 15, position: 'relative', top: -15}}>
+
+                        {this.state.open && <View style={{ marginHorizontal: 15, position: 'relative', top: -15 }}>
                             <Text style={styles.heading}>Observação: </Text>
                             <Text style={styles.body}>
                                 {note.note}
@@ -79,7 +91,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#fff',
         marginVertical: 8,
-        borderRadius: 16 ,
+        borderRadius: 16,
         width: 356
     },
     header: {
@@ -124,4 +136,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default connect(null, {deleteAnnotation})(Note);
+export default connect(null, { deleteAnnotation })(Note);

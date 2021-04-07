@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, TouchableOpacity, StatusBar, Image, Alert, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StatusBar, Image, Alert, StyleSheet, ActivityIndicator } from 'react-native';
 import ButtonIcon from '../../components/buttonIcon';
 import ButtonText from '../../components/buttonText';
 import HeaderDrawNav from '../../components/headerDrawNav';
@@ -278,6 +278,10 @@ class BookFormDraw extends React.Component {
                             <ActivityIndicator size='large' color="#2A00A2" style={{ height: 56 }} />
                             :
                             <ButtonText label="Adicionar" onPress={async () => {
+                                if(!(bookForm.title && bookForm.author && bookForm.totalPages && bookForm.year && bookForm.literaryGenre && bookForm.cover)) {
+                                    Alert.alert('Campos vazios', 'Nenhum dos campos podem ser vazios.');
+                                    return;
+                                }
                                 this.setState({ isLoading: true })
                                 try {
                                     await saveBook(bookForm);

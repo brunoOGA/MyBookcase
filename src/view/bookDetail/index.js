@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { View, ScrollView, StatusBar } from 'react-native';
 import BookDetails from '../../components/bookDetails';
-import FloatingButton from '../../components/floatingButton';
-import Notes from '../../components/notes';
 import Header from '../../components/header';
 
 import { connect } from 'react-redux';
 import { watchAnnotations } from '../../actions/annotation';
+import ButtonText from '../../components/buttonText';
 
 
 class BookDetail extends React.Component {
@@ -27,18 +26,19 @@ class BookDetail extends React.Component {
                 }} />
 
                 <ScrollView>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
                         <BookDetails book={book} navigation={this.props.navigation} />
-                        {this.props.annotations &&
-                            <Notes notes={this.props.annotations} navigation={this.props.navigation} book={book} />
-                        }
                     </View>
-
+                    <View style={{  paddingHorizontal: 32}} >
+                    <ButtonText label="Anotações" onPress={() => {
+                            this.props.navigation.navigate('Annotations', { book });
+                        }} />
+                    </View>
+                    
                 </ScrollView>
 
-                <FloatingButton type="note" onPress={() => {
-                    this.props.navigation.navigate('NoteForm', { type: 'create', book })
-                }} />
+
+
             </>
         )
     }
@@ -48,8 +48,8 @@ class BookDetail extends React.Component {
 const mapStateToProps = state => {
     const { listaAnnotations } = state;
 
-    if(listaAnnotations === null) {
-        return {annotations: listaAnnotations};
+    if (listaAnnotations === null) {
+        return { annotations: listaAnnotations };
     }
 
     const keys = Object.keys(listaAnnotations);

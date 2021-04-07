@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ButtonIcon from '../buttonIcon';
 import Line from '../line'
@@ -14,6 +14,10 @@ class BookDetails extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            isLoading: false,
+        }
     }
 
     render() {
@@ -27,13 +31,24 @@ class BookDetails extends React.Component {
                         <ButtonIcon type="change" onPress={() => {
                             navigation.navigate('BookForm', { type: 'update', book })
                         }} />
+                         {this.state.isLoading ?
+                                        <ActivityIndicator size='large' color="#ED2E7E" style={{ height: 44, margin: 4 }} />
+                                        :
                         <ButtonIcon type="delete" onPress={async () => {
+                            this.setState({ isLoading: true })
+                            try {
                             const hasDeleted = await this.props.deleteBook(book);
 
                             if (hasDeleted) {
                                 navigation.replace('Menu');
                             }
+                        } catch (error) {
+                            Alert.alert('Erro', error.message);
+                        } finally {
+                            this.setState({ isLoading: false })
+                        }
                         }} />
+                    }
                     </View>
                 </View>
                 <View style={styles.content}>

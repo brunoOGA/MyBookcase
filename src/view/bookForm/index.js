@@ -35,35 +35,6 @@ class BookForm extends React.Component {
         }
     }
 
-    /*
-        viewGallery() {
-            this.requestExternalStorageAccess();
-    
-            return (
-                <CameraRollPicker
-                    maximum={1}
-                    selectSingleItem={true}
-    
-                    callback={(volta) => {
-                        if (volta.length > 0) {
-                            console.log(volta);
-                            ImgToBase64.getBase64String(volta[0].uri)
-                                .then(stringConvertida => {
-                                    this.props.setField('cover', stringConvertida)
-                                })
-                                .catch(err => {
-                                    console.log(err)
-                                })
-                        }
-    
-                        this.setState({
-                            isCameraRoll: false,
-                        })
-                    }}
-                />
-            );
-        }
-    */
     async requestExternalStorageAccess() {
         try {
             const permission = await PermissionsAndroid
@@ -128,28 +99,6 @@ class BookForm extends React.Component {
         }
     }
 
-
-
-    /*
-        componentDidMount() {
-            const { type } = this.props.route.params;
-            if (type == 'update') {
-                this.setState({
-                    type: 'update',
-                    book: this.props.route.params.book
-                });
-            }
-        }
-    
-        onChangeHandler(field, value) {
-            this.setState({
-                book: {
-                    ...bookForm,
-                    [field]: value
-                }
-            })
-        }
-    */
 
     viewForm() {
         const { bookForm, setField, saveBook, navigation } = this.props;

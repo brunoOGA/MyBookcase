@@ -17,11 +17,10 @@ class NoteForm extends React.Component {
         }
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         const { setAllFields, resetForm } = this.props;
 
         if (this.props.route.params && this.props.route.params.note) {
-            console.log(this.props.route.params.note)
             this.setState({ type: 'update' })
             setAllFields(this.props.route.params.note)
         } else {
@@ -29,16 +28,6 @@ class NoteForm extends React.Component {
         }
 
     }
-    /*
-        onChangeHandler(field, value) {
-            this.setState({
-                note: {
-                    ...annotationForm,
-                    [field]: value
-                }
-            })
-        }
-    */
 
     render() {
         let quoteRef, initialPageRef, finalPageRef, noteRef;

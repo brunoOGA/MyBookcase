@@ -12,20 +12,9 @@ Icon.loadFont();
 
 class Bookcase extends React.Component {
 
-    /* constructor(props) {
-        super(props);
 
-        this.state = {
-            //filter: '',
-           // auxBooks: null,
-        }
-    } */
-
-    async componentDidMount() {
-        await this.props.watchBooks();
-        /*this.setState({
-            auxBooks: this.props.books,
-        })*/
+     componentDidMount() {
+         this.props.watchBooks();
     }
 
 
@@ -34,20 +23,6 @@ class Bookcase extends React.Component {
             [field]: value
         })
     }
-    /*
-    onFilter(value) {
-        let filtro = null;
-        if (this.props.books)
-            filtro = this.props.books.filter(item => item.title.toUpperCase().includes(value.toUpperCase()));
-
-        this.setState({
-            auxBooks: filtro,
-            filter: ''
-        });
-    }
-    */
-
-
 
     render() {
         return (
@@ -82,6 +57,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        marginVertical: 16,
     },
     input: {
         borderRadius: 4,
@@ -121,25 +97,3 @@ const mapStateToProps = state => {
 }
 
 export default connect(mapStateToProps, { watchBooks })(Bookcase);
-
-
-
-/*<View style={{ flexDirection: 'row', marginHorizontal: 30, marginVertical: 12 }}>
-                        <TextInput
-                            placeholder='Buscar por livro'
-                            style={styles.input}
-                            value={this.state.filter}
-                            blurOnSubmit
-                            onChangeText={value => { this.onChangeHandler('filter', value) }}
-                            returnKeyType="send"
-                            onSubmitEditing={() => {
-                                this.onFilter(this.state.filter)
-                            }}
-                        />
-                        <TouchableOpacity style={styles.button} onPress={() => {
-                            this.onFilter(this.state.filter)
-                            Keyboard.dismiss()
-                        }}>
-                            <Icon name='search' size={20} color="#fff" />
-                        </TouchableOpacity>
-                    </View>*/
