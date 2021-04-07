@@ -53,9 +53,10 @@ export const saveBook = book => {
 
 export const CURRENTPAGE_SAVED_SUCESS = 'CURRENTPAGE_SAVED_SUCESS';
 
-export const currentPageSavedSucess = () => {
+export const currentPageSavedSucess = book => {
     return {
-        type: CURRENTPAGE_SAVED_SUCESS
+        type: CURRENTPAGE_SAVED_SUCESS,        
+        book: book
     }
 }
 
@@ -66,9 +67,9 @@ export const saveCurrentPage = book => {
         await firebase
             .database()
             .ref(`/users/${currentUser.uid}/books/${book.id}`)
-            .set(book);
+            .update({ currentPage: book.currentPage })
 
-            dispatch(currentPageSavedSucess());
+            dispatch(currentPageSavedSucess(book));
     }
 }
 
