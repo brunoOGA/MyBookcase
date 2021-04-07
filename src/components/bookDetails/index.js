@@ -41,12 +41,13 @@ class BookDetails extends React.Component {
 
                             if (hasDeleted) {
                                 navigation.replace('Menu');
+                            }else {
+                                this.setState({ isLoading: false })
                             }
                         } catch (error) {
-                            Alert.alert('Erro', error.message);
-                        } finally {
                             this.setState({ isLoading: false })
-                        }
+                            Alert.alert('Erro', error.message);
+                        } 
                         }} />
                     }
                     </View>

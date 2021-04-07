@@ -48,12 +48,14 @@ class Note extends React.Component {
                                         <ButtonIcon type="delete" onPress={async () => {
                                             this.setState({ isLoading: true })
                                             try {
-                                                await this.props.deleteAnnotation(book, note);
+                                                const hasDeleted = await this.props.deleteAnnotation(book, note);
+
+                                                if (!hasDeleted) {
+                                                    this.setState({ isLoading: false })
+                                                }
                                             } catch (error) {
                                                 Alert.alert('Erro', error.message);
-                                            } finally {
-                                                this.setState({ isLoading: false })
-                                            }
+                                            } 
                                         }} />
                                     }
                                 </View>

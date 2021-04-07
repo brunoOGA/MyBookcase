@@ -105,12 +105,12 @@ class NoteForm extends React.Component {
                                     this.setState({ isLoading: true })
                                     try {
                                         await saveAnnotation(this.props.route.params.book, annotationForm);
+                                        this.setState({ isLoading: false })
                                         navigation.pop()
                                     } catch (error) {
-                                        Alert.alert('Erro', error.message);
-                                    } finally {
                                         this.setState({ isLoading: false })
-                                    }
+                                        Alert.alert('Erro', error.message);
+                                    } 
                                 }}
                             />
 
@@ -126,12 +126,12 @@ class NoteForm extends React.Component {
                                         this.setState({ isLoading: true })
                                         try {
                                             await saveAnnotation(this.props.route.params.book, annotationForm);
+                                            this.setState({ isLoading: false })
                                             navigation.pop()
                                         } catch (error) {
-                                            Alert.alert('Erro', error.message);
-                                        } finally {
                                             this.setState({ isLoading: false })
-                                        }
+                                            Alert.alert('Erro', error.message);
+                                        } 
                                     }} />
                                     :
                                     <ButtonText label="Adicionar" style={{ width: 311 }} onPress={async () => {
@@ -142,12 +142,12 @@ class NoteForm extends React.Component {
                                         this.setState({ isLoading: true })
                                         try {
                                             await saveAnnotation(this.props.route.params.book, annotationForm);
+                                            this.setState({ isLoading: false })
                                             navigation.pop()
                                         } catch (error) {
-                                            Alert.alert('Erro', error.message);
-                                        } finally {
                                             this.setState({ isLoading: false })
-                                        }
+                                            Alert.alert('Erro', error.message);
+                                        } 
                                     }} />
                             }
                         </View>

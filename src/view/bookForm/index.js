@@ -285,12 +285,12 @@ class BookForm extends React.Component {
                                         this.setState({ isLoading: true })
                                         try {
                                             await saveBook(bookForm);
+                                            this.setState({ isLoading: false })
                                             navigation.replace('Menu');
                                         } catch (error) {
-                                            Alert.alert('Erro', error.message);
-                                        } finally {
                                             this.setState({ isLoading: false })
-                                        }
+                                            Alert.alert('Erro', error.message);
+                                        } 
                                     }}
                                 />
                             </View>
@@ -310,12 +310,12 @@ class BookForm extends React.Component {
                                         this.setState({ isLoading: true })
                                         try {
                                             await saveBook(bookForm);
+                                            this.setState({ isLoading: false })
                                             navigation.replace('Menu');
                                         } catch (error) {
-                                            Alert.alert('Erro', error.message);
-                                        } finally {
                                             this.setState({ isLoading: false })
-                                        }
+                                            Alert.alert('Erro', error.message);
+                                        } 
                                     }} />
                                     :
                                     <ButtonText label="Adicionar" onPress={async () => {
@@ -326,12 +326,12 @@ class BookForm extends React.Component {
                                         this.setState({ isLoading: true })
                                         try {
                                             await saveBook(bookForm);
+                                            this.setState({ isLoading: false })
                                             navigation.replace('Menu');
                                         } catch (error) {
-                                            Alert.alert('Erro', error.message);
-                                        } finally {
                                             this.setState({ isLoading: false })
-                                        }
+                                            Alert.alert('Erro', error.message);
+                                        } 
 
                                     }} />
                             }
