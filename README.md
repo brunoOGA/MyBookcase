@@ -2,6 +2,7 @@
 
 ## Sobre
 Aplicação própria desenvolvida para a disciplina - Progamação Móvel. 
+
 ---
 
 ## Requisitos da atividade
@@ -39,13 +40,13 @@ Aplicação própria desenvolvida para a disciplina - Progamação Móvel.
 ##Screenshots
 
 <h1 align="center">
-   <img src="Screenshots/1.jpeg">
-   <img src="Screenshots/2.jpeg">
-   <img src="Screenshots/3.jpeg">
-   <img src="Screenshots/4.jpeg">
-   <img src="Screenshots/5.jpeg">
-   <img src="Screenshots/6.jpeg">
-   <img src="Screenshots/7.jpeg">
-   <img src="Screenshots/8.jpeg">
-   <img src="Screenshots/9.jpeg">
+   <img src="Screenshots/1.jpeg"  width="150">
+   <img src="Screenshots/2.jpeg"  width="150">
+   <img src="Screenshots/3.jpeg"  width="150">
+   <img src="Screenshots/4.jpeg"  width="150">
+   <img src="Screenshots/5.jpeg"  width="150">
+   <img src="Screenshots/6.jpeg" width="150" >
+   <img src="Screenshots/7.jpeg" width="150" >
+   <img src="Screenshots/8.jpeg" width="150">
+   <img src="Screenshots/9.jpeg" width="150">
 </h1>
