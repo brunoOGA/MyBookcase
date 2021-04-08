@@ -37,7 +37,7 @@ Aplicação própria desenvolvida para a disciplina - Progamação Móvel.
 
 ---
 
-##Screenshots
+## Screenshots
 
 <h1 align="center">
    <img src="Screenshots/1.jpeg"  width="150">
